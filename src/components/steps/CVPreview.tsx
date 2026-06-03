@@ -1,10 +1,10 @@
 'use client';
 import React, { useRef, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { useCV } from '@/context/CVContext';
+import { useCV, THEMES } from '@/context/CVContext';
 
 export default function CVPreview() {
-  const { personalData, experiences, educations, skills, summary } = useCV();
+  const { personalData, experiences, educations, skills, summary, theme, setTheme } = useCV();
   const cvRef = useRef<HTMLDivElement>(null);
   
   const [showModal, setShowModal] = useState(false);
@@ -118,45 +118,68 @@ export default function CVPreview() {
         </button>
       </div>
 
+      {/* Theme Selector */}
+      <div className="w-full bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-wrap items-center justify-between gap-4">
+        <span className="text-sm font-bold text-gray-700 uppercase tracking-wide">Selecciona un Diseño:</span>
+        <div className="flex gap-3 flex-wrap">
+          {THEMES.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setTheme(t)}
+              className={`w-8 h-8 rounded-full border-2 transition-transform shadow-sm ${theme.id === t.id ? 'scale-110 ring-2 ring-offset-2 ring-gray-400' : 'hover:scale-110'}`}
+              style={{ backgroundColor: t.primary, borderColor: t.secondary }}
+              title={t.name}
+            />
+          ))}
+        </div>
+      </div>
+
       {/* CV Document Container */}
       <div className="bg-white shadow-lg border border-gray-200 w-full overflow-hidden" style={{ minHeight: '297mm', padding: '20mm' }}>
-        <div ref={cvRef} className="cv-content font-sans" style={{ fontSize: '14px', lineHeight: '1.6', color: '#1e293b', backgroundColor: '#ffffff' }}>
+        <div ref={cvRef} className="cv-content font-sans" style={{ fontSize: '14px', lineHeight: '1.6', color: theme.textDark, backgroundColor: '#ffffff' }}>
           
           {/* Header */}
-          <div className="pb-6 mb-6" style={{ borderBottom: '2px solid #2563eb' }}>
-            <h1 className="text-3xl font-bold uppercase tracking-wider mb-2" style={{ color: '#111827' }}>{personalData.fullName || 'Tu Nombre'}</h1>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm" style={{ color: '#4b5563' }}>
-              {personalData.rut && <span><strong>RUT/ID:</strong> {personalData.rut}</span>}
-              {personalData.nationality && <span><strong>Nacionalidad:</strong> {personalData.nationality}</span>}
-              {personalData.address && <span><strong>Domicilio:</strong> {personalData.address}</span>}
+          <div className="pb-6 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-6" style={{ borderBottom: `2px solid ${theme.primary}` }}>
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold uppercase tracking-wider mb-2" style={{ color: theme.textDark }}>{personalData.fullName || 'Tu Nombre'}</h1>
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm" style={{ color: theme.textLight }}>
+                {personalData.rut && <span><strong>RUT/ID:</strong> {personalData.rut}</span>}
+                {personalData.nationality && <span><strong>Nacionalidad:</strong> {personalData.nationality}</span>}
+                {personalData.address && <span><strong>Domicilio:</strong> {personalData.address}</span>}
+              </div>
             </div>
+            {personalData.photo && (
+              <div className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 rounded-full overflow-hidden border-4" style={{ borderColor: theme.bgLight }}>
+                <img src={personalData.photo} alt="Fotografía" className="w-full h-full object-cover" />
+              </div>
+            )}
           </div>
 
           {/* Summary */}
           {summary && (
             <div className="mb-6">
-              <h2 className="text-lg font-bold uppercase mb-2" style={{ color: '#2563eb' }}>Perfil Profesional</h2>
-              <p className="text-justify" style={{ color: '#374151' }}>{summary}</p>
+              <h2 className="text-lg font-bold uppercase mb-2" style={{ color: theme.primary }}>Perfil Profesional</h2>
+              <p className="text-justify" style={{ color: theme.textDark }}>{summary}</p>
             </div>
           )}
 
           {/* Experience */}
           {experiences.some(e => e.company || e.position) && (
             <div className="mb-6">
-              <h2 className="text-lg font-bold uppercase mb-3" style={{ color: '#2563eb' }}>Experiencia Laboral</h2>
+              <h2 className="text-lg font-bold uppercase mb-3" style={{ color: theme.primary }}>Experiencia Laboral</h2>
               <div className="space-y-4">
                 {experiences.map(exp => {
                   if (!exp.company && !exp.position) return null;
                   return (
                     <div key={exp.id}>
                       <div className="flex justify-between items-baseline mb-1">
-                        <h3 className="font-bold" style={{ color: '#1f2937' }}>{exp.position}</h3>
-                        <span className="text-sm font-medium" style={{ color: '#6b7280' }}>
+                        <h3 className="font-bold" style={{ color: theme.textDark }}>{exp.position}</h3>
+                        <span className="text-sm font-medium" style={{ color: theme.textLight }}>
                           {exp.startDate} {exp.endDate ? `- ${exp.endDate}` : '- Presente'}
                         </span>
                       </div>
-                      <div className="font-medium mb-1" style={{ color: '#1d4ed8' }}>{exp.company}</div>
-                      <p className="text-sm whitespace-pre-line" style={{ color: '#374151' }}>{exp.description}</p>
+                      <div className="font-medium mb-1" style={{ color: theme.secondary }}>{exp.company}</div>
+                      <p className="text-sm whitespace-pre-line" style={{ color: theme.textDark }}>{exp.description}</p>
                     </div>
                   );
                 })}
@@ -167,19 +190,19 @@ export default function CVPreview() {
           {/* Education */}
           {educations.some(e => e.institution || e.degree) && (
             <div className="mb-6">
-              <h2 className="text-lg font-bold uppercase mb-3" style={{ color: '#2563eb' }}>Formación Académica</h2>
+              <h2 className="text-lg font-bold uppercase mb-3" style={{ color: theme.primary }}>Formación Académica</h2>
               <div className="space-y-3">
                 {educations.map(edu => {
                   if (!edu.institution && !edu.degree) return null;
                   return (
                     <div key={edu.id}>
                       <div className="flex justify-between items-baseline mb-1">
-                        <h3 className="font-bold" style={{ color: '#1f2937' }}>{edu.degree}</h3>
-                        <span className="text-sm font-medium" style={{ color: '#6b7280' }}>
+                        <h3 className="font-bold" style={{ color: theme.textDark }}>{edu.degree}</h3>
+                        <span className="text-sm font-medium" style={{ color: theme.textLight }}>
                           {edu.startDate} {edu.endDate ? `- ${edu.endDate}` : ''}
                         </span>
                       </div>
-                      <div style={{ color: '#4b5563' }}>{edu.institution}</div>
+                      <div style={{ color: theme.textLight }}>{edu.institution}</div>
                     </div>
                   );
                 })}
@@ -190,10 +213,10 @@ export default function CVPreview() {
           {/* Skills */}
           {skills.length > 0 && (
             <div>
-              <h2 className="text-lg font-bold uppercase mb-3" style={{ color: '#2563eb' }}>Habilidades Destacadas</h2>
+              <h2 className="text-lg font-bold uppercase mb-3" style={{ color: theme.primary }}>Habilidades Destacadas</h2>
               <div className="flex flex-wrap gap-2">
                 {skills.map((skill, i) => (
-                  <span key={i} className="px-3 py-1 rounded-md text-sm font-medium" style={{ backgroundColor: '#f3f4f6', color: '#1f2937' }}>
+                  <span key={i} className="px-3 py-1 rounded-md text-sm font-medium" style={{ backgroundColor: theme.bgLight, color: theme.textDark }}>
                     {skill}
                   </span>
                 ))}

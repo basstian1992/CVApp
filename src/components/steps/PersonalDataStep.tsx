@@ -46,11 +46,54 @@ export default function PersonalDataStep() {
 
   const { isListening, isSupported, toggleListening } = useVoiceRecognition(handleAddressTranscript);
 
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, photo: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removePhoto = () => {
+    setFormData(prev => ({ ...prev, photo: null }));
+  };
+
   return (
     <div className="bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-gray-100 max-w-2xl mx-auto w-full">
       <h2 className="text-2xl font-bold text-gray-800 mb-6 font-sans">Datos Personales</h2>
       
       <div className="space-y-5">
+        
+        {/* Photo Upload */}
+        <div className="flex flex-col items-center sm:flex-row sm:items-start gap-4 p-4 border border-gray-100 rounded-xl bg-gray-50/50">
+          <div className="relative group">
+            <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200 bg-white flex items-center justify-center">
+              {formData.photo ? (
+                <img src={formData.photo} alt="Foto de perfil" className="w-full h-full object-cover" />
+              ) : (
+                <svg className="w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" /></svg>
+              )}
+            </div>
+            {formData.photo && (
+              <button onClick={removePhoto} className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1 shadow-sm hover:bg-red-600 transition-colors">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            )}
+          </div>
+          <div className="flex-1 text-center sm:text-left">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Fotografía (Opcional)</label>
+            <p className="text-xs text-gray-500 mb-3">Sube una foto formal para tu currículum. Formatos recomendados: JPG o PNG.</p>
+            <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+              {formData.photo ? 'Cambiar Foto' : 'Subir Foto'}
+              <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
+            </label>
+          </div>
+        </div>
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Nombre Completo</label>
           <div className="relative">
