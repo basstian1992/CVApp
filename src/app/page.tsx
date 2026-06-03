@@ -7,6 +7,7 @@ import EducationStep from '@/components/steps/EducationStep';
 import SkillsStep from '@/components/steps/SkillsStep';
 import SummaryStep from '@/components/steps/SummaryStep';
 import CVPreview from '@/components/steps/CVPreview';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Home() {
   const steps = ['Datos Personales', 'Experiencia', 'Formación', 'Habilidades', 'Resumen'];
@@ -36,9 +37,12 @@ export default function Home() {
             </div>
             <h1 className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-900 to-blue-600 tracking-tight">CV App</h1>
           </div>
-          <div className="flex items-center gap-2 text-xs font-semibold text-blue-700 bg-blue-100/50 px-3 py-1.5 rounded-full border border-blue-200/50 backdrop-blur-sm">
-            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-            App Gratuita
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-xs font-semibold text-blue-700 bg-blue-100/50 px-3 py-1.5 rounded-full border border-blue-200/50 backdrop-blur-sm">
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+              App Gratuita
+            </div>
+            <ThemeToggle />
           </div>
         </div>
       </header>
@@ -48,10 +52,10 @@ export default function Home() {
         {/* Vanguardist Hero Section */}
         <div className="mb-14 space-y-10">
           <div className="text-center space-y-4">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 tracking-tight pb-2">
-              CV App, Currículums Gratuitos
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 dark:from-slate-100 dark:via-blue-300 dark:to-slate-100 tracking-tight pb-2">
+              CVApp - Currículum Gratis en 1 minuto
             </h2>
-            <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto font-medium">
+            <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-medium">
               Destaca tu perfil profesional con nuestra App gratuita. Genera tu currículum en minutos con herramientas avanzadas e intuitivas.
             </p>
           </div>
