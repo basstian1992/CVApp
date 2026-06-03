@@ -14,7 +14,7 @@ export default function CVPreview() {
   const generatePDFBlob = async () => {
     // Dynamic import for client side only
     const html2pdf = (await import('html2pdf.js')).default;
-    const element = cvRef.current;
+    const element = cvRef.current as HTMLElement;
     if (!element) return new Blob();
     
     const opt = {
@@ -41,7 +41,7 @@ export default function CVPreview() {
   const handleDownload = async () => {
     setMessage('');
     const html2pdf = (await import('html2pdf.js')).default;
-    const element = cvRef.current;
+    const element = cvRef.current as HTMLElement;
     if (!element) return;
 
     const opt = {
@@ -210,7 +210,7 @@ export default function CVPreview() {
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
             <h3 className="text-2xl font-bold text-gray-900 mb-2">Recibe tu CV</h3>
-            <p className="text-gray-500 mb-6 text-sm">Ingresa tu correo electrónico para enviarte el PDF terminado. (Nota: En fase de prueba solo puedes enviar al correo registrado en Resend).</p>
+            <p className="text-gray-500 mb-6 text-sm">Ingresa tu correo electrónico para enviarte el PDF terminado.</p>
             
             <input 
               type="email" 
