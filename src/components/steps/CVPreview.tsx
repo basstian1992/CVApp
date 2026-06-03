@@ -15,11 +15,12 @@ export default function CVPreview() {
     // Dynamic import for client side only
     const html2pdf = (await import('html2pdf.js')).default;
     const element = cvRef.current;
+    if (!element) return new Blob();
     
     const opt = {
       margin:       10,
       filename:     `CV_${personalData.fullName.replace(/\s+/g, '_')}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
+      image:        { type: 'jpeg' as const, quality: 0.98 },
       html2canvas:  { scale: 2, useCORS: true },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
@@ -41,10 +42,12 @@ export default function CVPreview() {
     setMessage('');
     const html2pdf = (await import('html2pdf.js')).default;
     const element = cvRef.current;
+    if (!element) return;
+
     const opt = {
       margin:       10,
       filename:     `CV_${personalData.fullName.replace(/\s+/g, '_')}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
+      image:        { type: 'jpeg' as const, quality: 0.98 },
       html2canvas:  { scale: 2, useCORS: true },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
