@@ -12,18 +12,18 @@ export default function SummaryStep() {
   });
 
   return (
-    <div className="bg-white dark:bg-slate-800 dark:bg-slate-800 p-6 sm:p-10 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 dark:border-slate-700 max-w-2xl mx-auto w-full">
-      <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-200 dark:text-slate-200 font-sans mb-2">Perfil y Resumen</h2>
-      <p className="text-sm text-gray-500 dark:text-slate-400 dark:text-slate-400 mb-6">Un buen resumen (3 o 4 líneas) al inicio del CV aumenta enormemente tus posibilidades. Escribe o dicta brevemente quién eres y qué buscas.</p>
+    <div className="bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-gray-100 max-w-2xl mx-auto w-full">
+      <h2 className="text-2xl font-bold text-gray-800 font-sans mb-2">Perfil y Resumen</h2>
+      <p className="text-sm text-gray-500 mb-6">Un buen resumen (3 o 4 líneas) al inicio del CV aumenta enormemente tus posibilidades. Escribe o dicta brevemente quién eres y qué buscas.</p>
       
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 dark:text-slate-300 mb-2 flex justify-between items-center">
+        <label className="block text-sm font-medium text-gray-700 mb-2 flex justify-between items-center">
           <span>Descripción de tu perfil</span>
           {isSupported && (
             <button 
               type="button"
               onClick={toggleListening}
-              className={`text-xs flex items-center gap-1 px-3 py-1.5 rounded-full ${isListening ? 'bg-red-50 text-red-600 border border-red-200 animate-pulse' : 'bg-white dark:bg-slate-800 dark:bg-slate-800 text-blue-600 border border-blue-100 hover:bg-blue-50'} transition-colors shadow-sm`}
+              className={`text-xs flex items-center gap-1 px-3 py-1.5 rounded-full ${isListening ? 'bg-red-50 text-red-600 border border-red-200 animate-pulse' : 'bg-white text-blue-600 border border-blue-100 hover:bg-blue-50'} transition-colors shadow-sm`}
             >
               {isListening ? (
                 <><span className="w-2 h-2 rounded-full bg-red-600"></span> Escuchando...</>
@@ -42,7 +42,7 @@ export default function SummaryStep() {
           value={summary}
           onChange={(e) => setSummary(e.target.value)}
           placeholder="Habla o escribe aquí tu presentación..."
-          className="w-full px-4 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 py-3 rounded-xl border border-gray-200 dark:border-slate-700 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none text-sm min-h-[150px] resize-y"
+          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm min-h-[150px] resize-y"
         />
         
         <div className="mt-3">

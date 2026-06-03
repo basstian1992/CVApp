@@ -31,12 +31,12 @@ export default function SkillsStep() {
   });
 
   return (
-    <div className="bg-white dark:bg-slate-800 dark:bg-slate-800 p-6 sm:p-10 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 dark:border-slate-700 max-w-2xl mx-auto w-full">
-      <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-200 dark:text-slate-200 font-sans mb-2">Habilidades Destacadas</h2>
-      <p className="text-sm text-gray-500 dark:text-slate-400 dark:text-slate-400 mb-6">Agrega las herramientas, programas o habilidades blandas que dominas (Ej: Excel avanzado, Trabajo en equipo, Inglés medio).</p>
+    <div className="bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-gray-100 max-w-2xl mx-auto w-full">
+      <h2 className="text-2xl font-bold text-gray-800 font-sans mb-2">Habilidades Destacadas</h2>
+      <p className="text-sm text-gray-500 mb-6">Agrega las herramientas, programas o habilidades blandas que dominas (Ej: Excel avanzado, Trabajo en equipo, Inglés medio).</p>
       
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 dark:text-slate-300 mb-1 flex justify-between items-center">
+        <label className="block text-sm font-medium text-gray-700 mb-1 flex justify-between items-center">
           <span>Nueva Habilidad</span>
           {isSupported && (
             <button 
@@ -60,7 +60,7 @@ export default function SkillsStep() {
               onChange={(e) => setCurrentSkill(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ej. Manejo de caja"
-              className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 dark:border-slate-700 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+              className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
             />
             <div className="absolute right-2 top-2.5">
               <AIEnhanceButton 
@@ -81,12 +81,12 @@ export default function SkillsStep() {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 min-h-[100px] p-4 bg-slate-50 dark:bg-slate-900 dark:bg-slate-900 border border-gray-100 dark:border-slate-700 dark:border-slate-700 rounded-xl">
+      <div className="flex flex-wrap gap-2 min-h-[100px] p-4 bg-slate-50 border border-gray-100 rounded-xl">
         {skills.length === 0 && (
           <span className="text-gray-400 text-sm italic w-full text-center mt-6">No has agregado ninguna habilidad aún.</span>
         )}
         {skills.map((skill, index) => (
-          <div key={index} className="bg-white dark:bg-slate-800 dark:bg-slate-800 border border-blue-200 text-blue-700 px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-sm text-sm">
+          <div key={index} className="bg-white border border-blue-200 text-blue-700 px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-sm text-sm">
             <span>{skill}</span>
             <button 
               onClick={() => handleRemove(skill)}

@@ -104,7 +104,7 @@ export default function CVPreview() {
       <div className="w-full flex flex-col sm:flex-row justify-end gap-3 mb-6">
         <button 
           onClick={handleDownload}
-          className="bg-white dark:bg-slate-800 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 dark:border-slate-700 hover:bg-gray-50 text-gray-700 dark:text-slate-300 dark:text-slate-300 font-medium py-3 sm:py-2 px-6 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 w-full sm:w-auto"
+          className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium py-3 sm:py-2 px-6 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 w-full sm:w-auto"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
           Descargar PDF
@@ -119,8 +119,8 @@ export default function CVPreview() {
       </div>
 
       {/* Theme Selector */}
-      <div className="w-full bg-white dark:bg-slate-800 dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 dark:border-slate-700 mb-6 flex flex-wrap items-center justify-between gap-4">
-        <span className="text-sm font-bold text-gray-700 dark:text-slate-300 dark:text-slate-300 uppercase tracking-wide">Selecciona un Diseño:</span>
+      <div className="w-full bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-wrap items-center justify-between gap-4">
+        <span className="text-sm font-bold text-gray-700 uppercase tracking-wide">Selecciona un Diseño:</span>
         <div className="flex gap-3 flex-wrap">
           {THEMES.map((t) => (
             <button
@@ -136,7 +136,7 @@ export default function CVPreview() {
 
       {/* CV Document Container */}
       <div className="w-full overflow-x-auto pb-6 rounded-lg">
-        <div className="bg-white dark:bg-slate-800 dark:bg-slate-800 shadow-lg border border-gray-200 dark:border-slate-700 dark:border-slate-700 mx-auto" style={{ width: '210mm', minHeight: '297mm', padding: '20mm' }}>
+        <div className="bg-white shadow-lg border border-gray-200 mx-auto" style={{ width: '210mm', minHeight: '297mm', padding: '20mm' }}>
           <div ref={cvRef} className="cv-content font-sans" style={{ fontSize: '14px', lineHeight: '1.6', color: theme.textDark, backgroundColor: '#ffffff' }}>
           
           {/* Header */}
@@ -232,22 +232,22 @@ export default function CVPreview() {
       {/* Modal Envío por Correo via Portal */}
       {showModal && typeof document !== 'undefined' && createPortal(
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
-          <div className="bg-white dark:bg-slate-800 dark:bg-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative" style={{ pointerEvents: 'auto' }}>
+          <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative" style={{ pointerEvents: 'auto' }}>
             <button 
               onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:text-slate-400 dark:text-slate-400 z-10"
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-slate-100 dark:text-slate-100 mb-2">Recibe tu CV</h3>
-            <p className="text-gray-500 dark:text-slate-400 dark:text-slate-400 mb-6 text-sm">Ingresa tu correo electrónico para enviarte el PDF terminado.</p>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Recibe tu CV</h3>
+            <p className="text-gray-500 mb-6 text-sm">Ingresa tu correo electrónico para enviarte el PDF terminado.</p>
             
             <input 
               type="email" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="tu@correo.com"
-              className="w-full px-4 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 py-3 rounded-xl border border-gray-300 dark:border-slate-600 dark:border-slate-600 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none mb-4 transition-all text-gray-800 dark:text-slate-200 dark:text-slate-200"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none mb-4 transition-all text-gray-800"
               autoFocus
             />
             

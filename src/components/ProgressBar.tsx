@@ -16,11 +16,11 @@ export default function ProgressBar({ currentStep, totalSteps, steps }: Progress
           const isActive = index + 1 === currentStep;
           const isCompleted = index + 1 < currentStep;
           return (
-            <div key={index} className={`flex flex-col items-center ${isActive ? 'text-blue-600 font-semibold' : isCompleted ? 'text-gray-600 dark:text-slate-400' : 'text-gray-400'}`}>
+            <div key={index} className={`flex flex-col items-center ${isActive ? 'text-blue-600 font-semibold' : isCompleted ? 'text-gray-600' : 'text-gray-400'}`}>
               <div className={`w-8 h-8 flex items-center justify-center rounded-full border-2 text-sm transition-colors duration-300 ${
                 isActive ? 'border-blue-600 bg-blue-50 text-blue-600' : 
                 isCompleted ? 'border-blue-600 bg-blue-600 text-white' : 
-                'border-gray-200 dark:border-slate-700 bg-gray-50 text-gray-400'
+                'border-gray-200 bg-gray-50 text-gray-400'
               }`}>
                 {isCompleted ? '✓' : index + 1}
               </div>
