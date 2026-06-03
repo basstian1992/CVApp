@@ -1,7 +1,5 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 import { NextResponse } from 'next/server';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
   try {
@@ -15,9 +13,17 @@ export async function POST(req: Request) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    const data = await resend.emails.send({
-      from: 'CV Asistido <onboarding@resend.dev>',
-      to: email,
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'cvappchile@gmail.com',
+        pass: process.env.EMAIL_PASSWORD, // Necesitas generar una "Contraseña de Aplicación" en tu cuenta de Google
+      },
+    });
+
+    const mailOptions = {
+      from: '"CV Asistido Chile" <cvappchile@gmail.com>',
+      to: email, // Ahora podemos enviarle a cualquier correo
       subject: '📄 Tu Currículum Vitae Profesional',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
@@ -35,13 +41,11 @@ export async function POST(req: Request) {
           content: buffer,
         },
       ],
-    });
+    };
 
-    if (data.error) {
-      return NextResponse.json({ error: data.error.message }, { status: 400 });
-    }
+    await transporter.sendMail(mailOptions);
 
-    return NextResponse.json({ success: true, data });
+    return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error('Error sending email:', error);
     return NextResponse.json({ error: error.message || 'Error interno' }, { status: 500 });
