@@ -227,6 +227,7 @@ export default function CVPreview() {
 
         </div>
       </div>
+      </div>
 
       {/* Modal Envío por Correo via Portal */}
       {showModal && typeof document !== 'undefined' && createPortal(
