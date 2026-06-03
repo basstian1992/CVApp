@@ -97,41 +97,63 @@ function ExperienceForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <div>
           <label className="block text-xs font-medium text-gray-600 mb-1">Empresa</label>
-          <input 
-            type="text" 
-            value={experience.company}
-            onChange={(e) => onChange('company', e.target.value)}
-            placeholder="Ej. Comercializadora Sur"
-            className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
-          />
+          <div className="relative">
+            <input 
+              type="text" 
+              value={experience.company}
+              onChange={(e) => onChange('company', e.target.value)}
+              placeholder="Ej. Comercializadora Sur"
+              className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+            />
+            <div className="absolute right-1.5 top-1.5">
+              <AIEnhanceButton compact currentText={experience.company} contextInfo="Mejora la ortografía y formalidad del nombre de esta empresa" onEnhanced={(t) => onChange('company', t)} />
+            </div>
+          </div>
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-600 mb-1">Cargo / Puesto</label>
-          <input 
-            type="text" 
-            value={experience.position}
-            onChange={(e) => onChange('position', e.target.value)}
-            placeholder="Ej. Vendedor de Tienda"
-            className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
-          />
+          <div className="relative">
+            <input 
+              type="text" 
+              value={experience.position}
+              onChange={(e) => onChange('position', e.target.value)}
+              placeholder="Ej. Vendedor de Tienda"
+              className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+            />
+            <div className="absolute right-1.5 top-1.5">
+              <AIEnhanceButton compact currentText={experience.position} contextInfo="Mejora la formalidad y ortografía de este cargo laboral" onEnhanced={(t) => onChange('position', t)} />
+            </div>
+          </div>
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-600 mb-1">Fecha de Inicio</label>
-          <input 
-            type="month" 
-            value={experience.startDate}
-            onChange={(e) => onChange('startDate', e.target.value)}
-            className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
-          />
+          <div className="relative">
+            <input 
+              type="text" 
+              value={experience.startDate}
+              onChange={(e) => onChange('startDate', e.target.value)}
+              placeholder="Ej. Marzo 2020"
+              className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+            />
+            <div className="absolute right-1.5 top-1.5">
+              <AIEnhanceButton compact currentText={experience.startDate} contextInfo="Mejora el formato de esta fecha de inicio de trabajo (Ej. 'Ene 2020')" onEnhanced={(t) => onChange('startDate', t)} />
+            </div>
+          </div>
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-600 mb-1">Fecha de Término</label>
-          <input 
-            type="month" 
-            value={experience.endDate}
-            onChange={(e) => onChange('endDate', e.target.value)}
-            className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
-          />
+          <div className="relative">
+            <input 
+              type="text" 
+              value={experience.endDate}
+              onChange={(e) => onChange('endDate', e.target.value)}
+              placeholder="Ej. Actualidad"
+              className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+            />
+            <div className="absolute right-1.5 top-1.5">
+              <AIEnhanceButton compact currentText={experience.endDate} contextInfo="Mejora el formato de esta fecha de término de trabajo (Ej. 'Actualidad' o 'Dic 2022')" onEnhanced={(t) => onChange('endDate', t)} />
+            </div>
+          </div>
         </div>
       </div>
 

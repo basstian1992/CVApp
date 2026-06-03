@@ -19,6 +19,9 @@ export async function POST(req: Request) {
         user: 'cvappchile@gmail.com',
         pass: process.env.EMAIL_PASSWORD, // Necesitas generar una "Contraseña de Aplicación" en tu cuenta de Google
       },
+      tls: {
+        rejectUnauthorized: false
+      }
     });
 
     const mailOptions = {

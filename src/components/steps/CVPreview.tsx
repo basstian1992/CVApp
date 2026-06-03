@@ -1,5 +1,6 @@
 'use client';
 import React, { useRef, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useCV } from '@/context/CVContext';
 
 export default function CVPreview() {
@@ -31,9 +32,13 @@ export default function CVPreview() {
 
   useEffect(() => {
     // Auto-descargar al montar el componente (pequeño retraso para que renderice bien)
-    const timer = setTimeout(() => {
-      handleDownload();
-      setShowModal(true); // Abrir modal automáticamente después de descargar
+    const timer = setTimeout(async () => {
+      try {
+        await handleDownload();
+        setShowModal(true); // Abrir modal automáticamente después de descargar exitosamente
+      } catch (err) {
+        console.error("Error en auto-descarga:", err);
+      }
     }, 1500);
     return () => clearTimeout(timer);
   }, []);
@@ -51,7 +56,7 @@ export default function CVPreview() {
       html2canvas:  { scale: 2, useCORS: true },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
     };
-    html2pdf().from(element).set(opt).save();
+    await html2pdf().from(element).set(opt).save();
   };
 
   const handleSendEmail = async () => {
@@ -115,12 +120,12 @@ export default function CVPreview() {
 
       {/* CV Document Container */}
       <div className="bg-white shadow-lg border border-gray-200 w-full overflow-hidden" style={{ minHeight: '297mm', padding: '20mm' }}>
-        <div ref={cvRef} className="cv-content text-slate-800 font-sans" style={{ fontSize: '14px', lineHeight: '1.6' }}>
+        <div ref={cvRef} className="cv-content font-sans" style={{ fontSize: '14px', lineHeight: '1.6', color: '#1e293b', backgroundColor: '#ffffff' }}>
           
           {/* Header */}
-          <div className="border-b-2 border-blue-600 pb-6 mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 uppercase tracking-wider mb-2">{personalData.fullName || 'Tu Nombre'}</h1>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
+          <div className="pb-6 mb-6" style={{ borderBottom: '2px solid #2563eb' }}>
+            <h1 className="text-3xl font-bold uppercase tracking-wider mb-2" style={{ color: '#111827' }}>{personalData.fullName || 'Tu Nombre'}</h1>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm" style={{ color: '#4b5563' }}>
               {personalData.rut && <span><strong>RUT/ID:</strong> {personalData.rut}</span>}
               {personalData.nationality && <span><strong>Nacionalidad:</strong> {personalData.nationality}</span>}
               {personalData.address && <span><strong>Domicilio:</strong> {personalData.address}</span>}
@@ -130,28 +135,28 @@ export default function CVPreview() {
           {/* Summary */}
           {summary && (
             <div className="mb-6">
-              <h2 className="text-lg font-bold text-blue-600 uppercase mb-2">Perfil Profesional</h2>
-              <p className="text-gray-700 text-justify">{summary}</p>
+              <h2 className="text-lg font-bold uppercase mb-2" style={{ color: '#2563eb' }}>Perfil Profesional</h2>
+              <p className="text-justify" style={{ color: '#374151' }}>{summary}</p>
             </div>
           )}
 
           {/* Experience */}
           {experiences.some(e => e.company || e.position) && (
             <div className="mb-6">
-              <h2 className="text-lg font-bold text-blue-600 uppercase mb-3">Experiencia Laboral</h2>
+              <h2 className="text-lg font-bold uppercase mb-3" style={{ color: '#2563eb' }}>Experiencia Laboral</h2>
               <div className="space-y-4">
                 {experiences.map(exp => {
                   if (!exp.company && !exp.position) return null;
                   return (
                     <div key={exp.id}>
                       <div className="flex justify-between items-baseline mb-1">
-                        <h3 className="font-bold text-gray-800">{exp.position}</h3>
-                        <span className="text-sm text-gray-500 font-medium">
+                        <h3 className="font-bold" style={{ color: '#1f2937' }}>{exp.position}</h3>
+                        <span className="text-sm font-medium" style={{ color: '#6b7280' }}>
                           {exp.startDate} {exp.endDate ? `- ${exp.endDate}` : '- Presente'}
                         </span>
                       </div>
-                      <div className="text-blue-700 font-medium mb-1">{exp.company}</div>
-                      <p className="text-gray-700 text-sm whitespace-pre-line">{exp.description}</p>
+                      <div className="font-medium mb-1" style={{ color: '#1d4ed8' }}>{exp.company}</div>
+                      <p className="text-sm whitespace-pre-line" style={{ color: '#374151' }}>{exp.description}</p>
                     </div>
                   );
                 })}
@@ -162,19 +167,19 @@ export default function CVPreview() {
           {/* Education */}
           {educations.some(e => e.institution || e.degree) && (
             <div className="mb-6">
-              <h2 className="text-lg font-bold text-blue-600 uppercase mb-3">Formación Académica</h2>
+              <h2 className="text-lg font-bold uppercase mb-3" style={{ color: '#2563eb' }}>Formación Académica</h2>
               <div className="space-y-3">
                 {educations.map(edu => {
                   if (!edu.institution && !edu.degree) return null;
                   return (
                     <div key={edu.id}>
                       <div className="flex justify-between items-baseline mb-1">
-                        <h3 className="font-bold text-gray-800">{edu.degree}</h3>
-                        <span className="text-sm text-gray-500 font-medium">
+                        <h3 className="font-bold" style={{ color: '#1f2937' }}>{edu.degree}</h3>
+                        <span className="text-sm font-medium" style={{ color: '#6b7280' }}>
                           {edu.startDate} {edu.endDate ? `- ${edu.endDate}` : ''}
                         </span>
                       </div>
-                      <div className="text-gray-600">{edu.institution}</div>
+                      <div style={{ color: '#4b5563' }}>{edu.institution}</div>
                     </div>
                   );
                 })}
@@ -185,10 +190,10 @@ export default function CVPreview() {
           {/* Skills */}
           {skills.length > 0 && (
             <div>
-              <h2 className="text-lg font-bold text-blue-600 uppercase mb-3">Habilidades Destacadas</h2>
+              <h2 className="text-lg font-bold uppercase mb-3" style={{ color: '#2563eb' }}>Habilidades Destacadas</h2>
               <div className="flex flex-wrap gap-2">
                 {skills.map((skill, i) => (
-                  <span key={i} className="bg-gray-100 text-gray-800 px-3 py-1 rounded-md text-sm font-medium">
+                  <span key={i} className="px-3 py-1 rounded-md text-sm font-medium" style={{ backgroundColor: '#f3f4f6', color: '#1f2937' }}>
                     {skill}
                   </span>
                 ))}
@@ -199,13 +204,13 @@ export default function CVPreview() {
         </div>
       </div>
 
-      {/* Modal Envío por Correo */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative">
+      {/* Modal Envío por Correo via Portal */}
+      {showModal && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
+          <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative" style={{ pointerEvents: 'auto' }}>
             <button 
               onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
@@ -217,7 +222,8 @@ export default function CVPreview() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="tu@correo.com"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none mb-4"
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none mb-4 transition-all text-gray-800"
+              autoFocus
             />
             
             {message && (
@@ -238,7 +244,8 @@ export default function CVPreview() {
               )}
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

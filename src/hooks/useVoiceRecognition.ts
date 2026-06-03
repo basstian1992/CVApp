@@ -11,6 +11,11 @@ export function useVoiceRecognition(onTranscript: (text: string) => void) {
   const [isListening, setIsListening] = useState(false);
   const [isSupported, setIsSupported] = useState(true);
   const recognitionRef = useRef<any>(null);
+  const callbackRef = useRef(onTranscript);
+
+  useEffect(() => {
+    callbackRef.current = onTranscript;
+  }, [onTranscript]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -32,7 +37,7 @@ export function useVoiceRecognition(onTranscript: (text: string) => void) {
           }
         }
         if (finalTranscript) {
-          onTranscript(finalTranscript);
+          callbackRef.current(finalTranscript);
         }
       };
 
@@ -47,7 +52,7 @@ export function useVoiceRecognition(onTranscript: (text: string) => void) {
 
       recognitionRef.current = recognition;
     }
-  }, [onTranscript]);
+  }, []);
 
   const startListening = () => {
     if (recognitionRef.current && !isListening) {

@@ -22,8 +22,9 @@ export const formatRut = (rut: string): string => {
 };
 
 export const validateRut = (rut: string): boolean => {
-  if (!/^[0-9]+-[0-9kK]{1}$/.test(rut)) return false;
-  const [rutBody, dv] = rut.split('-');
+  const clean = rut.replace(/\./g, '');
+  if (!/^[0-9]+-[0-9kK]{1}$/.test(clean)) return false;
+  const [rutBody, dv] = clean.split('-');
   
   let t = parseInt(rutBody.replace(/\./g, ''), 10);
   let m = 0, s = 1;

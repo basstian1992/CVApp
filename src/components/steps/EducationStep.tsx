@@ -128,22 +128,34 @@ function EducationForm({
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">Fecha de Inicio</label>
+          <div className="relative">
             <input 
-              type="month" 
+              type="text" 
               value={education.startDate}
               onChange={(e) => onChange('startDate', e.target.value)}
+              placeholder="Ej. Marzo 2018"
               className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
             />
+            <div className="absolute right-1.5 top-1.5">
+              <AIEnhanceButton compact currentText={education.startDate} contextInfo="Mejora el formato de esta fecha de inicio de estudios" onEnhanced={(t) => onChange('startDate', t)} />
+            </div>
           </div>
-          <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Fecha de Término</label>
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">Fecha de Término</label>
+          <div className="relative">
             <input 
-              type="month" 
+              type="text" 
               value={education.endDate}
               onChange={(e) => onChange('endDate', e.target.value)}
+              placeholder="Ej. Diciembre 2022 o Actualidad"
               className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
             />
+            <div className="absolute right-1.5 top-1.5">
+              <AIEnhanceButton compact currentText={education.endDate} contextInfo="Mejora el formato de esta fecha de término de estudios" onEnhanced={(t) => onChange('endDate', t)} />
+            </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
