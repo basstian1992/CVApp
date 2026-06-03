@@ -101,6 +101,18 @@ export default function CVPreview() {
 
   return (
     <div className="max-w-4xl mx-auto flex flex-col items-center w-full">
+      
+      {/* Farewell Message & Logo */}
+      <div className="w-full bg-gradient-to-r from-blue-50 to-white p-6 sm:p-8 rounded-2xl shadow-sm border border-blue-100 mb-8 flex flex-col sm:flex-row items-center justify-center gap-6 text-center sm:text-left">
+        <div className="w-24 h-24 rounded-full shadow-lg bg-white flex-shrink-0 overflow-hidden border-4 border-white flex items-center justify-center">
+          <img src="/logo.png" alt="CVApp Logo" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display = 'none'} />
+        </div>
+        <div>
+          <h3 className="text-2xl sm:text-3xl font-extrabold text-blue-900 mb-2 tracking-tight">¡Tu Currículum está listo!</h3>
+          <p className="text-blue-700 font-medium text-lg">Fue un agrado ayudarte en tu CV, éxito en lo que buscas ✨</p>
+        </div>
+      </div>
+
       <div className="w-full flex flex-col sm:flex-row justify-end gap-3 mb-6">
         <button 
           onClick={handleDownload}

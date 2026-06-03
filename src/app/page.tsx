@@ -49,7 +49,12 @@ export default function Home() {
         
         {/* Vanguardist Hero Section */}
         <div className="mb-14 space-y-10">
-          <div className="text-center space-y-4">
+          <div className="text-center space-y-6">
+            <div className="flex justify-center mb-2">
+              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full shadow-2xl shadow-blue-500/20 bg-white flex items-center justify-center overflow-hidden border-4 border-white">
+                <img src="/logo.png" alt="CVApp Logo Grande" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display = 'none'} />
+              </div>
+            </div>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 tracking-tight pb-2">
               CVApp - Currículum Gratis en 1 minuto
             </h2>
