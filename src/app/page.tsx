@@ -32,8 +32,8 @@ export default function Home() {
       <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-white/20">
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-700 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-              <span className="text-white font-bold text-lg leading-none tracking-tighter">CV</span>
+            <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center shadow-lg shadow-blue-500/20 bg-white">
+              <img src="/logo.png" alt="CVApp Logo" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.innerHTML = '<span class="text-blue-600 font-bold text-lg leading-none tracking-tighter">CV</span>'; }} />
             </div>
             <h1 className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-900 to-blue-600 tracking-tight">CV App</h1>
           </div>
@@ -119,7 +119,7 @@ export default function Home() {
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <ExperienceStep />
               <div className="max-w-2xl mx-auto mt-4 flex justify-between">
-                <button onClick={handleBack} className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium py-3 px-6 rounded-xl transition-all">Atrás</button>
+                <button onClick={handleBack} className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 text-gray-700 dark:text-slate-300 font-medium py-3 px-6 rounded-xl transition-all">Atrás</button>
                 <button onClick={handleNext} className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-8 rounded-xl shadow-md transition-all hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2">
                   Siguiente: Formación <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </button>
@@ -131,7 +131,7 @@ export default function Home() {
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <EducationStep />
               <div className="max-w-2xl mx-auto mt-4 flex justify-between">
-                <button onClick={handleBack} className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium py-3 px-6 rounded-xl transition-all">Atrás</button>
+                <button onClick={handleBack} className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 text-gray-700 dark:text-slate-300 font-medium py-3 px-6 rounded-xl transition-all">Atrás</button>
                 <button onClick={handleNext} className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-8 rounded-xl shadow-md transition-all hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2">
                   Siguiente: Habilidades <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </button>
@@ -143,7 +143,7 @@ export default function Home() {
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <SkillsStep />
               <div className="max-w-2xl mx-auto mt-4 flex justify-between">
-                <button onClick={handleBack} className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium py-3 px-6 rounded-xl transition-all">Atrás</button>
+                <button onClick={handleBack} className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 text-gray-700 dark:text-slate-300 font-medium py-3 px-6 rounded-xl transition-all">Atrás</button>
                 <button onClick={handleNext} className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-8 rounded-xl shadow-md transition-all hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2">
                   Siguiente: Resumen <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </button>
@@ -155,7 +155,7 @@ export default function Home() {
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <SummaryStep />
               <div className="max-w-2xl mx-auto mt-4 flex justify-between">
-                <button onClick={handleBack} className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium py-3 px-6 rounded-xl transition-all">Atrás</button>
+                <button onClick={handleBack} className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 text-gray-700 dark:text-slate-300 font-medium py-3 px-6 rounded-xl transition-all">Atrás</button>
                 <button onClick={() => { setShowPreview(true); window.scrollTo(0,0); }} className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                   Finalizar y Ver CV
@@ -167,7 +167,7 @@ export default function Home() {
         </>
         ) : (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <button onClick={() => setShowPreview(false)} className="mb-6 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-xl transition-all flex items-center gap-2">
+            <button onClick={() => setShowPreview(false)} className="mb-6 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 text-gray-700 dark:text-slate-300 font-medium py-2 px-4 rounded-xl transition-all flex items-center gap-2">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               Volver a editar
             </button>

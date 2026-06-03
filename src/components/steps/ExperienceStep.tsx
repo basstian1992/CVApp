@@ -31,9 +31,9 @@ export default function ExperienceStep() {
   };
 
   return (
-    <div className="bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-gray-100 max-w-2xl mx-auto w-full">
+    <div className="bg-white dark:bg-slate-800 dark:bg-slate-800 p-6 sm:p-10 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 dark:border-slate-700 max-w-2xl mx-auto w-full">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 font-sans">Historial Laboral</h2>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-200 dark:text-slate-200 font-sans">Historial Laboral</h2>
         <button 
           onClick={handleAddExperience}
           className="text-sm bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg font-medium transition-colors"
@@ -81,7 +81,7 @@ function ExperienceForm({
   const { isListening, isSupported, toggleListening } = useVoiceRecognition(handleTranscript);
 
   return (
-    <div className="p-5 border border-gray-100 bg-slate-50 rounded-xl relative">
+    <div className="p-5 border border-gray-100 dark:border-slate-700 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 dark:bg-slate-900 rounded-xl relative">
       {canRemove && (
         <button 
           onClick={onRemove}
@@ -92,18 +92,18 @@ function ExperienceForm({
         </button>
       )}
       
-      <h3 className="font-medium text-gray-700 mb-4">Experiencia {index + 1}</h3>
+      <h3 className="font-medium text-gray-700 dark:text-slate-300 dark:text-slate-300 mb-4">Experiencia {index + 1}</h3>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1">Empresa</label>
+          <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 dark:text-slate-400 mb-1">Empresa</label>
           <div className="relative">
             <input 
               type="text" 
               value={experience.company}
               onChange={(e) => onChange('company', e.target.value)}
               placeholder="Ej. Comercializadora Sur"
-              className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+              className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-700 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
             />
             <div className="absolute right-1.5 top-1.5">
               <AIEnhanceButton compact currentText={experience.company} contextInfo="Mejora la ortografía y formalidad del nombre de esta empresa" onEnhanced={(t) => onChange('company', t)} />
@@ -111,14 +111,14 @@ function ExperienceForm({
           </div>
         </div>
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1">Cargo / Puesto</label>
+          <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 dark:text-slate-400 mb-1">Cargo / Puesto</label>
           <div className="relative">
             <input 
               type="text" 
               value={experience.position}
               onChange={(e) => onChange('position', e.target.value)}
               placeholder="Ej. Vendedor de Tienda"
-              className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+              className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-700 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
             />
             <div className="absolute right-1.5 top-1.5">
               <AIEnhanceButton compact currentText={experience.position} contextInfo="Mejora la formalidad y ortografía de este cargo laboral" onEnhanced={(t) => onChange('position', t)} />
@@ -126,14 +126,14 @@ function ExperienceForm({
           </div>
         </div>
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1">Fecha de Inicio</label>
+          <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 dark:text-slate-400 mb-1">Fecha de Inicio</label>
           <div className="relative">
             <input 
               type="text" 
               value={experience.startDate}
               onChange={(e) => onChange('startDate', e.target.value)}
               placeholder="Ej. Marzo 2020"
-              className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+              className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-700 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
             />
             <div className="absolute right-1.5 top-1.5">
               <AIEnhanceButton compact currentText={experience.startDate} contextInfo="Mejora el formato de esta fecha de inicio de trabajo (Ej. 'Ene 2020')" onEnhanced={(t) => onChange('startDate', t)} />
@@ -141,14 +141,14 @@ function ExperienceForm({
           </div>
         </div>
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1">Fecha de Término</label>
+          <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 dark:text-slate-400 mb-1">Fecha de Término</label>
           <div className="relative">
             <input 
               type="text" 
               value={experience.endDate}
               onChange={(e) => onChange('endDate', e.target.value)}
               placeholder="Ej. Actualidad"
-              className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+              className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-700 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
             />
             <div className="absolute right-1.5 top-1.5">
               <AIEnhanceButton compact currentText={experience.endDate} contextInfo="Mejora el formato de esta fecha de término de trabajo (Ej. 'Actualidad' o 'Dic 2022')" onEnhanced={(t) => onChange('endDate', t)} />
@@ -159,12 +159,12 @@ function ExperienceForm({
 
       <div>
         <div className="flex justify-between items-center mb-1">
-          <label className="block text-xs font-medium text-gray-600">Descripción de tareas (¿Qué hacías?)</label>
+          <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 dark:text-slate-400">Descripción de tareas (¿Qué hacías?)</label>
           {isSupported && (
             <button 
               type="button"
               onClick={toggleListening}
-              className={`text-xs flex items-center gap-1 px-2 py-1 rounded-full ${isListening ? 'bg-red-50 text-red-600 border border-red-200 animate-pulse' : 'bg-white text-blue-600 border border-blue-100 hover:bg-blue-50'} transition-colors shadow-sm`}
+              className={`text-xs flex items-center gap-1 px-2 py-1 rounded-full ${isListening ? 'bg-red-50 text-red-600 border border-red-200 animate-pulse' : 'bg-white dark:bg-slate-800 dark:bg-slate-800 text-blue-600 border border-blue-100 hover:bg-blue-50'} transition-colors shadow-sm`}
             >
               {isListening ? (
                 <><span className="w-2 h-2 rounded-full bg-red-600"></span> Escuchando...</>
@@ -178,7 +178,7 @@ function ExperienceForm({
           value={experience.description}
           onChange={(e) => onChange('description', e.target.value)}
           placeholder="Habla o escribe aquí lo que hacías en tu trabajo. Luego usa la IA para mejorarlo."
-          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm min-h-[100px] resize-y"
+          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-700 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none text-sm min-h-[100px] resize-y"
         />
         
         {/* IA Button integration */}

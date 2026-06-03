@@ -17,6 +17,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "CVApp - Currículum Gratis en 1 minuto",
   description: "Crea tu Currículum Vitae gratis en 1 minuto. App intuitiva con ayuda de Inteligencia Artificial para destacar tu perfil profesional en Chile.",
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  }
 };
 
 export default function RootLayout({
@@ -27,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-50 dark:bg-slate-900 text-slate-900 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <CVProvider>

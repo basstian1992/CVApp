@@ -30,9 +30,9 @@ export default function EducationStep() {
   };
 
   return (
-    <div className="bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-gray-100 max-w-2xl mx-auto w-full">
+    <div className="bg-white dark:bg-slate-800 dark:bg-slate-800 p-6 sm:p-10 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 dark:border-slate-700 max-w-2xl mx-auto w-full">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 font-sans">Formación Académica</h2>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-200 dark:text-slate-200 font-sans">Formación Académica</h2>
         <button 
           onClick={handleAddEducation}
           className="text-sm bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg font-medium transition-colors"
@@ -71,7 +71,7 @@ function EducationForm({
   canRemove: boolean
 }) {
   return (
-    <div className="p-5 border border-gray-100 bg-slate-50 rounded-xl relative">
+    <div className="p-5 border border-gray-100 dark:border-slate-700 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 dark:bg-slate-900 rounded-xl relative">
       {canRemove && (
         <button 
           onClick={onRemove}
@@ -82,18 +82,18 @@ function EducationForm({
         </button>
       )}
       
-      <h3 className="font-medium text-gray-700 mb-4">Estudio {index + 1}</h3>
+      <h3 className="font-medium text-gray-700 dark:text-slate-300 dark:text-slate-300 mb-4">Estudio {index + 1}</h3>
 
       <div className="grid grid-cols-1 gap-4 mb-4">
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1">Institución Educativa</label>
+          <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 dark:text-slate-400 mb-1">Institución Educativa</label>
           <div className="relative">
             <input 
               type="text" 
               value={education.institution}
               onChange={(e) => onChange('institution', e.target.value)}
               placeholder="Ej. Universidad de Chile o Liceo San José"
-              className="w-full pl-3 pr-10 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+              className="w-full pl-3 pr-10 py-2 rounded-lg border border-gray-200 dark:border-slate-700 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
             />
             <div className="absolute right-1.5 top-1.5">
               <AIEnhanceButton 
@@ -106,14 +106,14 @@ function EducationForm({
           </div>
         </div>
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1">Título o Grado Obtenido</label>
+          <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 dark:text-slate-400 mb-1">Título o Grado Obtenido</label>
           <div className="relative">
             <input 
               type="text" 
               value={education.degree}
               onChange={(e) => onChange('degree', e.target.value)}
               placeholder="Ej. Ingeniería Comercial, o Enseñanza Media Completa"
-              className="w-full pl-3 pr-10 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+              className="w-full pl-3 pr-10 py-2 rounded-lg border border-gray-200 dark:border-slate-700 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
             />
             <div className="absolute right-1.5 top-1.5">
               <AIEnhanceButton 
@@ -127,14 +127,14 @@ function EducationForm({
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Fecha de Inicio</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 dark:text-slate-400 mb-1">Fecha de Inicio</label>
           <div className="relative">
             <input 
               type="text" 
               value={education.startDate}
               onChange={(e) => onChange('startDate', e.target.value)}
               placeholder="Ej. Marzo 2018"
-              className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+              className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-700 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
             />
             <div className="absolute right-1.5 top-1.5">
               <AIEnhanceButton compact currentText={education.startDate} contextInfo="Mejora el formato de esta fecha de inicio de estudios" onEnhanced={(t) => onChange('startDate', t)} />
@@ -142,14 +142,14 @@ function EducationForm({
           </div>
         </div>
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1">Fecha de Término</label>
+          <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 dark:text-slate-400 mb-1">Fecha de Término</label>
           <div className="relative">
             <input 
               type="text" 
               value={education.endDate}
               onChange={(e) => onChange('endDate', e.target.value)}
               placeholder="Ej. Diciembre 2022 o Actualidad"
-              className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+              className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-700 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
             />
             <div className="absolute right-1.5 top-1.5">
               <AIEnhanceButton compact currentText={education.endDate} contextInfo="Mejora el formato de esta fecha de término de estudios" onEnhanced={(t) => onChange('endDate', t)} />
