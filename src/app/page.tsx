@@ -24,25 +24,71 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-[family-name:var(--font-geist-sans)] text-slate-900 selection:bg-blue-200 flex flex-col">
-      <header className="bg-white shadow-sm sticky top-0 z-10 border-b border-gray-100">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 font-[family-name:var(--font-geist-sans)] text-slate-900 selection:bg-blue-200 flex flex-col relative overflow-hidden">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-96 bg-blue-600/5 blur-3xl -z-10 rounded-b-full transform -translate-y-1/2"></div>
+      
+      <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-white/20">
+        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-500 rounded-xl flex items-center justify-center shadow-sm">
-              <span className="text-white font-bold text-lg leading-none">CV</span>
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-700 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+              <span className="text-white font-bold text-lg leading-none tracking-tighter">CV</span>
             </div>
-            <h1 className="text-xl font-bold text-gray-800 tracking-tight">CV Asistido Chile</h1>
+            <h1 className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-900 to-blue-600 tracking-tight">CV App</h1>
           </div>
-          <div className="text-sm font-medium text-blue-600 bg-blue-50 px-4 py-1.5 rounded-full border border-blue-100">
-            Borrador Auto-guardado
+          <div className="flex items-center gap-2 text-xs font-semibold text-blue-700 bg-blue-100/50 px-3 py-1.5 rounded-full border border-blue-200/50 backdrop-blur-sm">
+            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+            App Gratuita
           </div>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-10 w-full flex-grow">
-        <div className="mb-10">
-          <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-3 tracking-tight">Crea tu Currículum</h2>
-          <p className="text-center text-gray-500 text-lg">Te guiaremos paso a paso, ayudándote con Inteligencia Artificial ✨.</p>
+      <main className="max-w-5xl mx-auto px-4 py-12 w-full flex-grow relative z-10">
+        
+        {/* Vanguardist Hero Section */}
+        <div className="mb-14 space-y-10">
+          <div className="text-center space-y-4">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 tracking-tight pb-2">
+              CV App, Currículums Gratuitos
+            </h2>
+            <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto font-medium">
+              Destaca tu perfil profesional con nuestra App gratuita. Genera tu currículum en minutos con herramientas avanzadas e intuitivas.
+            </p>
+          </div>
+
+          {/* Social Justice Manifesto */}
+          <div className="max-w-3xl mx-auto relative group">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-500"></div>
+            <blockquote className="relative bg-white/90 backdrop-blur-xl border border-white/50 p-6 md:p-8 rounded-2xl shadow-xl text-center">
+              <div className="text-blue-500 mb-3 flex justify-center">
+                <svg className="w-8 h-8 opacity-50" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/></svg>
+              </div>
+              <p className="text-lg md:text-xl font-medium text-slate-800 leading-relaxed">
+                "Está hecho para las comunidades y personas cesantes en Chile, porque creemos en la justicia social, en la equidad, y en que la IA debe estar al uso de la fuerza trabajadora."
+              </p>
+            </blockquote>
+          </div>
+
+          {/* Feature Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+            <div className="bg-white/60 backdrop-blur-sm border border-white/60 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
+              <div className="text-3xl mb-3">✨</div>
+              <h3 className="font-bold text-slate-900 text-lg mb-2">Asistencia IA</h3>
+              <p className="text-slate-600 text-sm leading-relaxed">Impulsado por Google Gemini. Mejora tu redacción, corrige ortografía y dale un tono profesional a tu experiencia con un solo clic.</p>
+            </div>
+            
+            <div className="bg-white/60 backdrop-blur-sm border border-white/60 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
+              <div className="text-3xl mb-3">🎙️</div>
+              <h3 className="font-bold text-slate-900 text-lg mb-2">Dictado por Voz</h3>
+              <p className="text-slate-600 text-sm leading-relaxed">¿No quieres escribir? Presiona el micrófono y simplemente cuéntanos tu experiencia. El sistema redactará por ti.</p>
+            </div>
+
+            <div className="bg-white/60 backdrop-blur-sm border border-white/60 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
+              <div className="text-3xl mb-3">⚡</div>
+              <h3 className="font-bold text-slate-900 text-lg mb-2">Uso Intuitivo</h3>
+              <p className="text-slate-600 text-sm leading-relaxed">Diseñado pensando en ti. Una interfaz limpia y guiada paso a paso para que cualquier persona pueda crear un currículum perfecto.</p>
+            </div>
+          </div>
         </div>
 
         {!showPreview ? (
@@ -126,8 +172,21 @@ export default function Home() {
         )}
       </main>
       
-      <footer className="text-center py-8 text-gray-400 text-sm mt-auto">
-        &copy; {new Date().getFullYear()} CV Asistido Chile - Versión Beta
+      <footer className="w-full bg-slate-900 text-slate-400 py-10 mt-auto relative z-10">
+        <div className="max-w-5xl mx-auto px-4 flex flex-col items-center justify-center gap-4">
+          <div className="flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
+            <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+            <span className="font-medium text-slate-300">Web y App Registrada</span>
+          </div>
+          <p className="text-sm">
+            Desarrollado por <a href="https://www.asesoriapublica.cl" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 font-semibold underline decoration-blue-500/30 underline-offset-4 transition-colors">www.asesoriapublica.cl</a>
+          </p>
+          <div className="h-px w-24 bg-slate-800 my-2"></div>
+          <p className="text-xs text-slate-500 text-center">
+            &copy; {new Date().getFullYear()} Asesoría Pública. Todos los derechos reservados.<br/>
+            CV App es una herramienta de uso gratuito.
+          </p>
+        </div>
       </footer>
     </div>
   );
