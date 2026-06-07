@@ -17,9 +17,25 @@ export const THEMES: Theme[] = [
   { id: 'gray', name: 'Gris Monocromo', primary: '#4b5563', secondary: '#374151', textDark: '#1f2937', textLight: '#6b7280', bgLight: '#f3f4f6' },
   { id: 'terracotta', name: 'Terracota Moderno', primary: '#b45309', secondary: '#92400e', textDark: '#451a03', textLight: '#78350f', bgLight: '#fef3c7' },
   { id: 'navy', name: 'Azul Nocturno', primary: '#1e3a8a', secondary: '#172554', textDark: '#0f172a', textLight: '#334155', bgLight: '#f1f5f9' },
+  { id: 'pink', name: 'Rosado', primary: '#db2777', secondary: '#be185d', textDark: '#4c0519', textLight: '#831843', bgLight: '#fdf2f8' },
 ];
 
-type PersonalData = { fullName: string; rut: string; nationality: string; militarySituation: string; address: string; photo: string | null; };
+type PersonalData = { 
+  fullName: string; 
+  rut: string; 
+  nationality: string; 
+  militarySituation: string; 
+  address: string; 
+  phone: string;
+  email: string;
+  birthDate: string;
+  showBirthDate: boolean;
+  driverLicense: string;
+  hasDisability: boolean;
+  disabilityType: string;
+  disabilityPercentage: string;
+  photo: string | null; 
+};
 type Experience = { id: string; company: string; position: string; startDate: string; endDate: string; description: string; };
 type Education = { id: string; institution: string; degree: string; startDate: string; endDate: string; };
 
@@ -41,7 +57,12 @@ interface CVContextType {
 const CVContext = createContext<CVContextType | undefined>(undefined);
 
 export function CVProvider({ children }: { children: React.ReactNode }) {
-  const [personalData, setPersonalData] = useState<PersonalData>({ fullName: '', rut: '', nationality: 'Chilena', militarySituation: 'Al día', address: '', photo: null });
+  const [personalData, setPersonalData] = useState<PersonalData>({ 
+    fullName: '', rut: '', nationality: 'Chilena', militarySituation: 'Al día', address: '', 
+    phone: '', email: '', birthDate: '', showBirthDate: false, 
+    driverLicense: '', hasDisability: false, disabilityType: '', disabilityPercentage: '',
+    photo: null 
+  });
   const [experiences, setExperiences] = useState<Experience[]>([{ id: '1', company: '', position: '', startDate: '', endDate: '', description: '' }]);
   const [educations, setEducations] = useState<Education[]>([{ id: '1', institution: '', degree: '', startDate: '', endDate: '' }]);
   const [skills, setSkills] = useState<string[]>([]);

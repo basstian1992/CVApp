@@ -60,7 +60,7 @@ export default function SkillsStep() {
               onChange={(e) => setCurrentSkill(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ej. Manejo de caja"
-              className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+              className="w-full pl-4 pr-12 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
             />
             <div className="absolute right-2 top-2.5">
               <AIEnhanceButton 

@@ -1,11 +1,11 @@
 'use client';
 import React from 'react';
-import { useCV } from '@/context/CVContext';
+import { useCV, THEMES } from '@/context/CVContext';
 import AIEnhanceButton from '@/components/AIEnhanceButton';
 import { useVoiceRecognition } from '@/hooks/useVoiceRecognition';
 
 export default function SummaryStep() {
-  const { summary, setSummary } = useCV();
+  const { summary, setSummary, theme, setTheme } = useCV();
 
   const { isListening, isSupported, toggleListening } = useVoiceRecognition((transcript) => {
     setSummary((prev) => (prev + ' ' + transcript).trim());
@@ -42,15 +42,34 @@ export default function SummaryStep() {
           value={summary}
           onChange={(e) => setSummary(e.target.value)}
           placeholder="Habla o escribe aquí tu presentación..."
-          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm min-h-[150px] resize-y"
+          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm min-h-[150px] resize-y mb-2"
         />
         
-        <div className="mt-3">
+        <div className="mt-2 mb-6">
           <AIEnhanceButton 
             currentText={summary}
             contextInfo="Este es el resumen o perfil profesional al inicio de un Curriculum Vitae. Mejora la redacción para que suene proactivo, profesional, formal y persuasivo. Limítalo a un máximo de 50 palabras."
             onEnhanced={(t) => setSummary(t)} 
           />
+        </div>
+      </div>
+
+      <div className="mt-8 pt-6 border-t border-gray-100">
+        <h3 className="text-lg font-bold text-gray-800 mb-4">Elige un Diseño para tu CV</h3>
+        <div className="flex flex-wrap gap-4">
+          {THEMES.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setTheme(t)}
+              className={`w-10 h-10 rounded-full border-2 transition-transform shadow-sm relative ${theme.id === t.id ? 'scale-110 ring-4 ring-offset-2 ring-gray-300' : 'hover:scale-110'}`}
+              style={{ backgroundColor: t.primary, borderColor: t.secondary }}
+              title={t.name}
+            >
+              {theme.id === t.id && (
+                <svg className="absolute inset-0 m-auto w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+              )}
+            </button>
+          ))}
         </div>
       </div>
     </div>

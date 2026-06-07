@@ -11,17 +11,32 @@ type PersonalData = {
   nationality: string;
   militarySituation: string;
   address: string;
+  phone: string;
+  email: string;
+  birthDate: string;
+  showBirthDate: boolean;
+  driverLicense: string;
+  hasDisability: boolean;
+  disabilityType: string;
+  disabilityPercentage: string;
+  photo: string | null;
 };
 
 export default function PersonalDataStep() {
   const { personalData: formData, setPersonalData: setFormData } = useCV();
   const [rutError, setRutError] = useState('');
+  const [activeVoiceField, setActiveVoiceField] = useState<keyof PersonalData | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
     
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData(prev => ({ ...prev, [name]: checked }));
+      return;
+    }
+
     if (name === 'rut') {
-      // Si contiene letras (distintas de K), asumimos que es pasaporte o ID extranjero
       if (/[a-jl-zA-JL-Z]/.test(value)) {
         setFormData(prev => ({ ...prev, [name]: value.toUpperCase() }));
         setRutError('');
@@ -39,26 +54,52 @@ export default function PersonalDataStep() {
     }
   };
 
-  // Setup Voice Recognition for the address field
-  const handleAddressTranscript = (transcript: string) => {
-    setFormData(prev => ({ ...prev, address: (prev.address + ' ' + transcript).trim() }));
+  const handleTranscript = (transcript: string) => {
+    if (activeVoiceField && typeof formData[activeVoiceField] === 'string') {
+      setFormData(prev => ({ 
+        ...prev, 
+        [activeVoiceField]: ((prev[activeVoiceField] as string) + ' ' + transcript).trim() 
+      }));
+    }
   };
 
-  const { isListening, isSupported, toggleListening } = useVoiceRecognition(handleAddressTranscript);
+  const { isListening, isSupported, startListening, stopListening } = useVoiceRecognition(handleTranscript);
+
+  const toggleVoice = (field: keyof PersonalData) => {
+    if (isListening && activeVoiceField === field) {
+      stopListening();
+      setActiveVoiceField(null);
+    } else {
+      if (isListening) stopListening();
+      setActiveVoiceField(field);
+      setTimeout(() => startListening(), 100);
+    }
+  };
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, photo: reader.result as string }));
-      };
+      reader.onloadend = () => setFormData(prev => ({ ...prev, photo: reader.result as string }));
       reader.readAsDataURL(file);
     }
   };
 
-  const removePhoto = () => {
-    setFormData(prev => ({ ...prev, photo: null }));
+  const removePhoto = () => setFormData(prev => ({ ...prev, photo: null }));
+
+  const renderVoiceButton = (field: keyof PersonalData) => {
+    if (!isSupported) return null;
+    const isActive = isListening && activeVoiceField === field;
+    return (
+      <button 
+        type="button"
+        onClick={() => toggleVoice(field)}
+        title="Dictar por voz"
+        className={`absolute right-12 top-2 p-1.5 rounded-full transition-colors ${isActive ? 'bg-red-50 text-red-600 border border-red-200 animate-pulse' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}
+      >
+        {isActive ? <div className="w-4 h-4 rounded-full bg-red-600"></div> : <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>}
+      </button>
+    );
   };
 
   return (
@@ -66,28 +107,16 @@ export default function PersonalDataStep() {
       <h2 className="text-2xl font-bold text-gray-800 mb-6 font-sans">Datos Personales</h2>
       
       <div className="space-y-5">
-        
-        {/* Photo Upload */}
         <div className="flex flex-col items-center sm:flex-row sm:items-start gap-4 p-4 border border-gray-100 rounded-xl bg-gray-50/50">
           <div className="relative group">
             <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200 bg-white flex items-center justify-center">
-              {formData.photo ? (
-                <img src={formData.photo} alt="Foto de perfil" className="w-full h-full object-cover" />
-              ) : (
-                <svg className="w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" /></svg>
-              )}
+              {formData.photo ? <img src={formData.photo} alt="Foto" className="w-full h-full object-cover" /> : <svg className="w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" /></svg>}
             </div>
-            {formData.photo && (
-              <button onClick={removePhoto} className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1 shadow-sm hover:bg-red-600 transition-colors">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-              </button>
-            )}
+            {formData.photo && <button onClick={removePhoto} className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1 shadow-sm hover:bg-red-600"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>}
           </div>
           <div className="flex-1 text-center sm:text-left">
             <label className="block text-sm font-medium text-gray-700 mb-1">Fotografía (Opcional)</label>
-            <p className="text-xs text-gray-500 mb-3">Sube una foto formal para tu currículum. Formatos recomendados: JPG o PNG.</p>
             <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
               {formData.photo ? 'Cambiar Foto' : 'Subir Foto'}
               <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
             </label>
@@ -97,21 +126,10 @@ export default function PersonalDataStep() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Nombre Completo</label>
           <div className="relative">
-            <input 
-              type="text" 
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              placeholder="Ej. Juan Pérez González"
-              className="w-full pl-4 pr-12 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-            />
+            <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} placeholder="Ej. Juan Pérez González" className="w-full pl-4 pr-24 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none" />
+            {renderVoiceButton('fullName')}
             <div className="absolute right-2 top-2">
-              <AIEnhanceButton 
-                compact 
-                currentText={formData.fullName} 
-                contextInfo="Corrige la ortografía y tildes de este nombre propio de persona" 
-                onEnhanced={(t) => setFormData(p => ({...p, fullName: t}))} 
-              />
+              <AIEnhanceButton compact currentText={formData.fullName} contextInfo="Corrige la ortografía y tildes de este nombre propio de persona" onEnhanced={(t) => setFormData(p => ({...p, fullName: t}))} />
             </div>
           </div>
         </div>
@@ -119,87 +137,116 @@ export default function PersonalDataStep() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">RUT / Documento de Identidad</label>
-            <input 
-              type="text" 
-              name="rut"
-              value={formData.rut}
-              onChange={handleChange}
-              placeholder="Ej. 12.345.678-9 o Pasaporte"
-              maxLength={20}
-              className={`w-full px-4 py-3 rounded-xl border ${rutError ? 'border-orange-300 focus:ring-orange-500' : 'border-gray-200 focus:ring-blue-500 focus:border-blue-500'} focus:ring-2 outline-none transition-all`}
-            />
+            <div className="relative">
+              <input type="text" name="rut" value={formData.rut} onChange={handleChange} placeholder="Ej. 12.345.678-9" maxLength={20} className={`w-full pl-4 pr-12 py-3 rounded-xl border ${rutError ? 'border-orange-300 focus:ring-orange-500' : 'border-gray-200 focus:ring-blue-500'} focus:ring-2 outline-none`} />
+              {renderVoiceButton('rut')}
+            </div>
             {rutError && <p className="text-orange-500 text-xs mt-1">{rutError}</p>}
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Nacionalidad</label>
-            <input 
-              type="text" 
-              name="nationality"
-              value={formData.nationality}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Situación Militar</label>
-          <select 
-            name="militarySituation"
-            value={formData.militarySituation}
-            onChange={handleChange}
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white"
-          >
-            <option value="Al día">Al día</option>
-            <option value="No realizada">No realizada</option>
-            <option value="Exento">Exento</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center justify-between">
-            <span>Domicilio</span>
-            {isSupported && (
-              <button 
-                type="button"
-                onClick={toggleListening}
-                className={`text-xs flex items-center gap-1 px-3 py-1.5 rounded-full ${isListening ? 'bg-red-50 text-red-600 border border-red-200 animate-pulse' : 'bg-blue-50 text-blue-600 border border-blue-100 hover:bg-blue-100'} transition-colors shadow-sm`}
-              >
-                {isListening ? (
-                  <>
-                    <span className="w-2 h-2 rounded-full bg-red-600"></span> Escuchando...
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
-                    Dictar por voz
-                  </>
-                )}
-              </button>
-            )}
-          </label>
-          <div className="relative">
-            <input 
-              type="text" 
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              placeholder="Ej. Av. Providencia 1234, Santiago"
-              className="w-full pl-4 pr-12 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-            />
-            <div className="absolute right-2 top-2">
-              <AIEnhanceButton 
-                compact 
-                currentText={formData.address} 
-                contextInfo="Corrige la ortografía y formato de esta dirección domiciliaria en Chile" 
-                onEnhanced={(t) => setFormData(p => ({...p, address: t}))} 
-              />
+            <div className="relative">
+              <input type="text" name="nationality" value={formData.nationality} onChange={handleChange} className="w-full pl-4 pr-24 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none" />
+              {renderVoiceButton('nationality')}
+              <div className="absolute right-2 top-2">
+                <AIEnhanceButton compact currentText={formData.nationality} contextInfo="Corrige ortografía de nacionalidad" onEnhanced={(t) => setFormData(p => ({...p, nationality: t}))} />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+            <div className="relative">
+              <input type="text" name="phone" value={formData.phone} onChange={handleChange} placeholder="Ej. +569 1234 5678" className="w-full pl-4 pr-12 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none" />
+              {renderVoiceButton('phone')}
+            </div>
+          </div>
 
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+            <div className="relative">
+              <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Ej. juan@correo.com" className="w-full pl-4 pr-12 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none" />
+              {renderVoiceButton('email')}
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 items-start">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de Nacimiento</label>
+            <div className="relative mb-2">
+              <input type="text" name="birthDate" value={formData.birthDate} onChange={handleChange} placeholder="Ej. 15 de Marzo 1990" className="w-full pl-4 pr-24 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none" />
+              {renderVoiceButton('birthDate')}
+              <div className="absolute right-2 top-2">
+                <AIEnhanceButton compact currentText={formData.birthDate} contextInfo="Mejora el formato de esta fecha de nacimiento" onEnhanced={(t) => setFormData(p => ({...p, birthDate: t}))} />
+              </div>
+            </div>
+            <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+              <input type="checkbox" name="showBirthDate" checked={formData.showBirthDate} onChange={handleChange} className="w-4 h-4 text-blue-600 rounded" />
+              Mostrar en el CV
+            </label>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Situación Militar</label>
+            <select name="militarySituation" value={formData.militarySituation} onChange={handleChange} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+              <option value="Al día">Al día</option>
+              <option value="No realizada">No realizada</option>
+              <option value="Exento">Exento</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Domicilio</label>
+          <div className="relative">
+            <input type="text" name="address" value={formData.address} onChange={handleChange} placeholder="Ej. Av. Providencia 1234, Santiago" className="w-full pl-4 pr-24 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none" />
+            {renderVoiceButton('address')}
+            <div className="absolute right-2 top-2">
+              <AIEnhanceButton compact currentText={formData.address} contextInfo="Corrige la ortografía y formato de esta dirección domiciliaria en Chile" onEnhanced={(t) => setFormData(p => ({...p, address: t}))} />
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 items-start">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Licencia de Conducir</label>
+            <div className="relative">
+              <input type="text" name="driverLicense" value={formData.driverLicense} onChange={handleChange} placeholder="Ej. Clase B o No tiene" className="w-full pl-4 pr-12 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none" />
+              {renderVoiceButton('driverLicense')}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3 p-4 border border-gray-100 rounded-xl bg-gray-50/50">
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
+              <input type="checkbox" name="hasDisability" checked={formData.hasDisability} onChange={handleChange} className="w-4 h-4 text-blue-600 rounded" />
+              ¿Tienes alguna discapacidad?
+            </label>
+            
+            {formData.hasDisability && (
+              <div className="grid grid-cols-2 gap-3 mt-2 animate-in fade-in slide-in-from-top-2">
+                <div>
+                  <label className="block text-xs text-gray-600 mb-1">Tipo de discapacidad</label>
+                  <div className="relative">
+                    <input type="text" name="disabilityType" value={formData.disabilityType} onChange={handleChange} placeholder="Ej. Física, Visual" className="w-full pl-3 pr-8 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+                    {renderVoiceButton('disabilityType')}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-600 mb-1">Porcentaje (%)</label>
+                  <div className="relative">
+                    <input type="text" name="disabilityPercentage" value={formData.disabilityPercentage} onChange={handleChange} placeholder="Ej. 30%" className="w-full pl-3 pr-8 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+                    {renderVoiceButton('disabilityPercentage')}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }
