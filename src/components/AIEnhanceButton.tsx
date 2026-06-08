@@ -20,12 +20,30 @@ export default function AIEnhanceButton({ currentText, contextInfo, onEnhanced, 
     setError('');
 
     try {
-      const enhancedText = await enhanceTextWithAI(currentText, contextInfo);
+      const response = await fetch('/api/ai/enhance', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: currentText,
+          context: contextInfo
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al conectar con la IA');
+      }
+
+      const enhancedText = data.enhancedText || currentText;
       if (enhancedText) {
         onEnhanced(enhancedText);
       }
-    } catch (err) {
-      setError('Error al mejorar el texto');
+    } catch (err: any) {
+      const errorMsg = err.message || 'Error al mejorar el texto';
+      setError(errorMsg);
+      alert('Error de IA: ' + errorMsg); // Para debugging en celular
     } finally {
       setIsLoading(false);
     }

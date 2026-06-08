@@ -68,7 +68,7 @@ CRÍTICO: Devuelve ÚNICAMENTE el texto mejorado, sin introducciones, sin coment
             "X-Title": "CV Gratis", // Site Title
           },
           body: JSON.stringify({
-            "model": "meta-llama/llama-3-8b-instruct:free", // Modelo gratuito y rápido en OpenRouter
+            "model": "mistralai/mistral-7b-instruct:free", // Modelo gratuito y rápido en OpenRouter
             "messages": [
               {"role": "system", "content": systemPrompt},
               {"role": "user", "content": userPrompt}
@@ -87,8 +87,8 @@ CRÍTICO: Devuelve ÚNICAMENTE el texto mejorado, sin introducciones, sin coment
     }
 
     return NextResponse.json({ enhancedText });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in AI enhancement:', error);
-    return NextResponse.json({ error: 'Failed to enhance text' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Failed to enhance text' }, { status: 500 });
   }
 }
