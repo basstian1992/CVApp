@@ -65,8 +65,16 @@ export default function Home() {
               <p className="text-md md:text-lg text-blue-700 max-w-2xl mx-auto font-semibold bg-blue-50 py-2 px-4 rounded-xl border border-blue-100 inline-block">
                 Esperamos te sirva este regalo de parte de OMIL Talagante y <a href="https://www.asesoriapublica.cl" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">www.asesoriapublica.cl</a>
               </p>
-              <div className="flex justify-center mt-4">
-                <Link href="/capacitate" className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all hover:shadow-xl transform hover:-translate-y-1 flex items-center gap-2 text-lg border-2 border-white/20">
+              <div className="flex flex-col items-center gap-4 mt-6">
+                <button 
+                  onClick={() => document.getElementById('cv-builder-start')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold py-4 px-10 rounded-full shadow-lg transition-all hover:shadow-xl transform hover:-translate-y-1 flex items-center gap-3 text-xl border-2 border-white/20 w-full max-w-md justify-center"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                  Creemos tu CV
+                  <span className="block text-xs font-normal opacity-90 -mt-1 ml-2 border-l border-white/30 pl-2">rápido, gratis<br/>y paso a paso</span>
+                </button>
+                <Link href="/capacitate" className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all hover:shadow-xl transform hover:-translate-y-1 flex items-center gap-2 text-lg border-2 border-white/20 w-full max-w-md justify-center">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                   Capacítate
                   <span className="block text-xs font-normal opacity-90 -mt-1 ml-2 border-l border-white/30 pl-2">mejora tus habilidades para<br/>asegurar tu contratación</span>
@@ -124,7 +132,7 @@ export default function Home() {
         )}
 
         {!showPreview ? (
-          <>
+          <div id="cv-builder-start">
             <ProgressBar currentStep={currentStep} totalSteps={steps.length} steps={steps} />
 
             <div className="mt-10 transition-all duration-500 ease-in-out">
@@ -192,7 +200,7 @@ export default function Home() {
             </div>
           )}
         </div>
-        </>
+        </div>
         ) : (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <button onClick={() => setShowPreview(false)} className="mb-6 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-xl transition-all flex items-center gap-2">
