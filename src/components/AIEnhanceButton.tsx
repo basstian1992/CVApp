@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { enhanceTextWithAI } from '@/utils/aiHelper';
 
 interface AIEnhanceButtonProps {
   currentText: string;
@@ -19,27 +20,11 @@ export default function AIEnhanceButton({ currentText, contextInfo, onEnhanced, 
     setError('');
 
     try {
-      const response = await fetch('/api/ai/enhance', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: currentText,
-          context: contextInfo
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Error al conectar con la IA');
-      }
-
-      const data = await response.json();
-      if (data.enhancedText) {
-        onEnhanced(data.enhancedText);
+      const enhancedText = await enhanceTextWithAI(currentText, contextInfo);
+      if (enhancedText) {
+        onEnhanced(enhancedText);
       }
     } catch (err) {
-      console.error(err);
       setError('Error al mejorar el texto');
     } finally {
       setIsLoading(false);

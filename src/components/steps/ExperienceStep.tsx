@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useCV } from '@/context/CVContext';
 import { useVoiceRecognition } from '@/hooks/useVoiceRecognition';
 import AIEnhanceButton from '@/components/AIEnhanceButton';
+import { enhanceTextWithAI } from '@/utils/aiHelper';
 
 type WorkExperience = { id: string; company: string; position: string; startDate: string; endDate: string; description: string; };
 
@@ -37,7 +38,20 @@ function ExperienceForm({ experience, index, onChange, onRemove, canRemove }: { 
     }
   };
 
-  const { isListening, isSupported, startListening, stopListening } = useVoiceRecognition(handleTranscript);
+  const handleDictationEnd = async () => {
+    if (activeVoiceField && typeof experience[activeVoiceField] === 'string') {
+      try {
+        const enhancedText = await enhanceTextWithAI(experience[activeVoiceField] as string, `Corrige y mejora el texto para el campo de CV de experiencia laboral: ${activeVoiceField}`);
+        if (enhancedText) {
+          onChange(activeVoiceField, enhancedText);
+        }
+      } catch (e) {
+        console.error("AI Auto-enhance error", e);
+      }
+    }
+  };
+
+  const { isListening, isSupported, startListening, stopListening } = useVoiceRecognition(handleTranscript, handleDictationEnd);
 
   const toggleVoice = (field: keyof WorkExperience) => {
     if (isListening && activeVoiceField === field) {
@@ -54,7 +68,7 @@ function ExperienceForm({ experience, index, onChange, onRemove, canRemove }: { 
     if (!isSupported) return null;
     const isActive = isListening && activeVoiceField === field;
     return (
-      <button type="button" onClick={() => toggleVoice(field)} title="Dictar por voz" className={`absolute right-12 top-1.5 p-1.5 rounded-full transition-colors ${isActive ? 'bg-red-50 text-red-600 border border-red-200 animate-pulse' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}>
+      <button type="button" onClick={() => toggleVoice(field)} title="Dictar por voz" className={`p-1.5 rounded-full transition-colors shadow-sm ${isActive ? 'bg-red-50 text-red-600 border border-red-200 animate-pulse' : 'bg-blue-50 text-blue-600 border border-transparent hover:bg-blue-100 hover:border-blue-200'}`}>
         {isActive ? <div className="w-3.5 h-3.5 rounded-full bg-red-600"></div> : <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>}
       </button>
     );
@@ -68,33 +82,41 @@ function ExperienceForm({ experience, index, onChange, onRemove, canRemove }: { 
         <div>
           <label className="block text-xs font-medium text-gray-600 mb-1">Empresa</label>
           <div className="relative">
-            <input type="text" value={experience.company} onChange={(e) => onChange('company', e.target.value)} placeholder="Ej. Comercializadora Sur" className="w-full pl-3 pr-20 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
-            {renderVoiceButton('company')}
-            <div className="absolute right-1.5 top-1.5"><AIEnhanceButton compact currentText={experience.company} contextInfo="Mejora la ortografía y formalidad del nombre de esta empresa" onEnhanced={(t) => onChange('company', t)} /></div>
+            <input type="text" value={experience.company} onChange={(e) => onChange('company', e.target.value)} placeholder="Ej. Comercializadora Sur" className="w-full pl-3 pr-24 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+            <div className="absolute right-1.5 top-1.5 flex items-center gap-1">
+              {renderVoiceButton('company')}
+              <AIEnhanceButton compact currentText={experience.company} contextInfo="Mejora la ortografía y formalidad del nombre de esta empresa" onEnhanced={(t) => onChange('company', t)} />
+            </div>
           </div>
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-600 mb-1">Cargo / Puesto</label>
           <div className="relative">
-            <input type="text" value={experience.position} onChange={(e) => onChange('position', e.target.value)} placeholder="Ej. Vendedor de Tienda" className="w-full pl-3 pr-20 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
-            {renderVoiceButton('position')}
-            <div className="absolute right-1.5 top-1.5"><AIEnhanceButton compact currentText={experience.position} contextInfo="Mejora la formalidad y ortografía de este cargo laboral" onEnhanced={(t) => onChange('position', t)} /></div>
+            <input type="text" value={experience.position} onChange={(e) => onChange('position', e.target.value)} placeholder="Ej. Vendedor de Tienda" className="w-full pl-3 pr-24 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+            <div className="absolute right-1.5 top-1.5 flex items-center gap-1">
+              {renderVoiceButton('position')}
+              <AIEnhanceButton compact currentText={experience.position} contextInfo="Mejora la formalidad y ortografía de este cargo laboral" onEnhanced={(t) => onChange('position', t)} />
+            </div>
           </div>
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-600 mb-1">Fecha de Inicio</label>
           <div className="relative">
-            <input type="text" value={experience.startDate} onChange={(e) => onChange('startDate', e.target.value)} placeholder="Ej. Marzo 2020" className="w-full pl-3 pr-20 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
-            {renderVoiceButton('startDate')}
-            <div className="absolute right-1.5 top-1.5"><AIEnhanceButton compact currentText={experience.startDate} contextInfo="Mejora el formato de esta fecha de inicio de trabajo (Ej. 'Ene 2020')" onEnhanced={(t) => onChange('startDate', t)} /></div>
+            <input type="text" value={experience.startDate} onChange={(e) => onChange('startDate', e.target.value)} placeholder="Ej. Marzo 2020" className="w-full pl-3 pr-24 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+            <div className="absolute right-1.5 top-1.5 flex items-center gap-1">
+              {renderVoiceButton('startDate')}
+              <AIEnhanceButton compact currentText={experience.startDate} contextInfo="Mejora el formato de esta fecha de inicio de trabajo (Ej. 'Ene 2020')" onEnhanced={(t) => onChange('startDate', t)} />
+            </div>
           </div>
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-600 mb-1">Fecha de Término</label>
           <div className="relative">
-            <input type="text" value={experience.endDate} onChange={(e) => onChange('endDate', e.target.value)} placeholder="Ej. Actualidad" className="w-full pl-3 pr-20 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
-            {renderVoiceButton('endDate')}
-            <div className="absolute right-1.5 top-1.5"><AIEnhanceButton compact currentText={experience.endDate} contextInfo="Mejora el formato de esta fecha de término de trabajo (Ej. 'Actualidad' o 'Dic 2022')" onEnhanced={(t) => onChange('endDate', t)} /></div>
+            <input type="text" value={experience.endDate} onChange={(e) => onChange('endDate', e.target.value)} placeholder="Ej. Actualidad" className="w-full pl-3 pr-24 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+            <div className="absolute right-1.5 top-1.5 flex items-center gap-1">
+              {renderVoiceButton('endDate')}
+              <AIEnhanceButton compact currentText={experience.endDate} contextInfo="Mejora el formato de esta fecha de término de trabajo (Ej. 'Actualidad' o 'Dic 2022')" onEnhanced={(t) => onChange('endDate', t)} />
+            </div>
           </div>
         </div>
       </div>

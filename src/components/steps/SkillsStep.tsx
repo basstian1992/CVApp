@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useCV } from '@/context/CVContext';
 import AIEnhanceButton from '@/components/AIEnhanceButton';
 import { useVoiceRecognition } from '@/hooks/useVoiceRecognition';
+import { enhanceTextWithAI } from '@/utils/aiHelper';
 
 export default function SkillsStep() {
   const { skills, setSkills } = useCV();
@@ -26,9 +27,22 @@ export default function SkillsStep() {
     setSkills(skills.filter(s => s !== skillToRemove));
   };
 
+  const handleDictationEnd = async () => {
+    if (currentSkill.trim()) {
+      try {
+        const enhancedText = await enhanceTextWithAI(currentSkill.trim(), "Mejora el nombre de esta habilidad laboral para que suene profesional y concisa (1 a 4 palabras máximo)");
+        if (enhancedText) {
+          setCurrentSkill(enhancedText);
+        }
+      } catch (e) {
+        console.error("AI Auto-enhance error", e);
+      }
+    }
+  };
+
   const { isListening, isSupported, toggleListening } = useVoiceRecognition((transcript) => {
     setCurrentSkill((prev) => (prev + ' ' + transcript).trim());
-  });
+  }, handleDictationEnd);
 
   return (
     <div className="bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-gray-100 max-w-2xl mx-auto w-full">
@@ -62,7 +76,7 @@ export default function SkillsStep() {
               placeholder="Ej. Manejo de caja"
               className="w-full pl-4 pr-12 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
             />
-            <div className="absolute right-2 top-2.5">
+            <div className="absolute right-2 top-2.5 flex items-center gap-1">
               <AIEnhanceButton 
                 compact 
                 currentText={currentSkill} 

@@ -7,9 +7,8 @@ export default function CVPreview() {
   const { personalData, experiences, educations, skills, summary, theme } = useCV();
   const cvRef = useRef<HTMLDivElement>(null);
   
-  const [showModal, setShowModal] = useState(false);
   const [email, setEmail] = useState('');
-  const [isSending, setIsSending] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [message, setMessage] = useState('');
 
   const generatePDFBlob = async () => {
@@ -28,17 +27,7 @@ export default function CVPreview() {
     return await html2pdf().from(element).set(opt).output('blob');
   };
 
-  useEffect(() => {
-    const timer = setTimeout(async () => {
-      try {
-        await handleDownload();
-        setShowModal(true);
-      } catch (err) {
-        console.error("Error en auto-descarga:", err);
-      }
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
+  // Removido el auto-descarga
 
   const handleDownload = async () => {
     setMessage('');
@@ -56,43 +45,43 @@ export default function CVPreview() {
     await html2pdf().from(element).set(opt).save();
   };
 
-  const handleSendEmail = async () => {
-    if (!email) {
-      setMessage('Por favor, ingresa tu correo.');
-      return;
-    }
-    
-    setIsSending(true);
+  const handleFinalize = async () => {
+    setIsProcessing(true);
     setMessage('Generando PDF...');
     
     try {
-      const pdfBlob = await generatePDFBlob();
-      const file = new File([pdfBlob], 'Curriculum_Vitae.pdf', { type: 'application/pdf' });
+      await handleDownload();
 
-      setMessage('Enviando correo...');
-      
-      const formData = new FormData();
-      formData.append('email', email);
-      formData.append('file', file);
+      if (email.trim()) {
+        setMessage('Enviando copia a tu correo...');
+        const pdfBlob = await generatePDFBlob();
+        const file = new File([pdfBlob], 'Curriculum_Vitae.pdf', { type: 'application/pdf' });
 
-      const res = await fetch('/api/send-cv', {
-        method: 'POST',
-        body: formData,
-      });
+        const formData = new FormData();
+        formData.append('email', email.trim());
+        formData.append('file', file);
 
-      const data = await res.json();
-      
-      if (res.ok) {
-        setMessage('¡Enviado con éxito! Revisa tu bandeja de entrada o spam.');
-        setTimeout(() => setShowModal(false), 3000);
+        const res = await fetch('/api/send-cv', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await res.json();
+        
+        if (res.ok) {
+          setMessage('¡CV descargado y enviado con éxito!');
+        } else {
+          setMessage(`CV descargado, pero hubo un error al enviar correo: ${data.error}`);
+        }
       } else {
-        setMessage(`Error: ${data.error}`);
+        setMessage('¡CV descargado con éxito!');
       }
     } catch (err) {
       console.error(err);
-      setMessage('Ocurrió un error al enviar.');
+      setMessage('Ocurrió un error al procesar el CV.');
     } finally {
-      setIsSending(false);
+      setIsProcessing(false);
+      setTimeout(() => setMessage(''), 5000);
     }
   };
 
@@ -108,16 +97,30 @@ export default function CVPreview() {
         </div>
       </div>
 
-      <div className="w-full flex flex-col sm:flex-row justify-end gap-3 mb-6">
-        <button onClick={handleDownload} className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium py-3 sm:py-2 px-6 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 w-full sm:w-auto">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-          Descargar PDF
-        </button>
-        <button onClick={() => setShowModal(true)} className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 sm:py-2 px-6 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 w-full sm:w-auto">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-          Enviar a mi Correo
+      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4 mb-4 bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+        <div className="flex-1 w-full">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Enviarme una copia por correo (Opcional)</label>
+          <input 
+            type="email" 
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)} 
+            placeholder="tu@correo.com" 
+            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm transition-all" 
+          />
+        </div>
+        <button 
+          onClick={handleFinalize} 
+          disabled={isProcessing}
+          className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 sm:py-2.5 px-6 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 w-full sm:w-auto sm:mt-6"
+        >
+          {isProcessing ? (
+            <><svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Procesando...</>
+          ) : (
+            <><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg> {email.trim() ? 'Descargar y Enviar CV' : 'Descargar PDF'}</>
+          )}
         </button>
       </div>
+      {message && <div className={`w-full text-sm mb-6 p-4 rounded-xl text-center font-medium shadow-sm border ${message.includes('Error') ? 'bg-red-50 text-red-700 border-red-100' : 'bg-green-50 text-green-700 border-green-100'}`}>{message}</div>}
 
       <div className="w-full overflow-x-auto pb-6 rounded-lg">
         <div className="bg-white shadow-lg border border-gray-200 mx-auto" style={{ width: '210mm', minHeight: '297mm', padding: '20mm' }}>
@@ -218,21 +221,6 @@ export default function CVPreview() {
       </div>
       </div>
 
-      {showModal && typeof document !== 'undefined' && createPortal(
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
-          <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative" style={{ pointerEvents: 'auto' }}>
-            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Recibe tu CV</h3>
-            <p className="text-gray-500 mb-6 text-sm">Ingresa tu correo electrónico para enviarte el PDF terminado.</p>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tu@correo.com" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none mb-4 transition-all text-gray-800" autoFocus />
-            {message && <div className={`text-sm mb-4 p-3 rounded-lg ${message.includes('Error') ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-700'}`}>{message}</div>}
-            <button onClick={handleSendEmail} disabled={isSending || !email} className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-medium py-3 rounded-xl transition-all shadow-md flex justify-center items-center gap-2">
-              {isSending ? <><svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Enviando...</> : 'Enviar CV por Correo'}
-            </button>
-          </div>
-        </div>,
-        document.body
-      )}
     </div>
   );
 }

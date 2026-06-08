@@ -19,13 +19,13 @@ export async function POST(req: Request) {
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     const prompt = `Eres un redactor experto de Currículums Vitae (CV) en Chile.
-El usuario ha escrito lo siguiente para el campo: "${context}".
+El usuario ha escrito o dictado lo siguiente para el campo: "${context}".
 Tu objetivo es corregir la ortografía, mejorar la redacción, usar un tono profesional y verbos de acción.
 NO inventes datos, títulos, ni empresas que no estén en el texto original.
-Devuelve ÚNICAMENTE el texto mejorado, sin introducciones ni comentarios.
+CRÍTICO: Devuelve ÚNICAMENTE el texto mejorado, sin introducciones, sin comentarios, SIN comillas y SIN bloques de código (Markdown). El texto debe estar listo para ser insertado directamente en un input HTML.
 
 Texto original del usuario:
-"${text}"
+${text}
 `;
 
     const result = await model.generateContent(prompt);

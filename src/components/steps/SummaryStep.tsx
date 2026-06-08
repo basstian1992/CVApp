@@ -3,13 +3,27 @@ import React from 'react';
 import { useCV, THEMES } from '@/context/CVContext';
 import AIEnhanceButton from '@/components/AIEnhanceButton';
 import { useVoiceRecognition } from '@/hooks/useVoiceRecognition';
+import { enhanceTextWithAI } from '@/utils/aiHelper';
 
 export default function SummaryStep() {
   const { summary, setSummary, theme, setTheme } = useCV();
 
+  const handleDictationEnd = async () => {
+    if (summary.trim()) {
+      try {
+        const enhancedText = await enhanceTextWithAI(summary.trim(), "Este es el resumen o perfil profesional al inicio de un Curriculum Vitae. Mejora la redacción para que suene proactivo, profesional, formal y persuasivo. Limítalo a un máximo de 50 palabras.");
+        if (enhancedText) {
+          setSummary(enhancedText);
+        }
+      } catch (e) {
+        console.error("AI Auto-enhance error", e);
+      }
+    }
+  };
+
   const { isListening, isSupported, toggleListening } = useVoiceRecognition((transcript) => {
     setSummary((prev) => (prev + ' ' + transcript).trim());
-  });
+  }, handleDictationEnd);
 
   return (
     <div className="bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-gray-100 max-w-2xl mx-auto w-full">

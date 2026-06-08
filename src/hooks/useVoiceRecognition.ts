@@ -7,15 +7,18 @@ declare global {
   }
 }
 
-export function useVoiceRecognition(onTranscript: (text: string) => void) {
+export function useVoiceRecognition(onTranscript: (text: string) => void, onEnd?: (finalText: string) => void) {
   const [isListening, setIsListening] = useState(false);
   const [isSupported, setIsSupported] = useState(true);
   const recognitionRef = useRef<any>(null);
   const callbackRef = useRef(onTranscript);
+  const onEndRef = useRef(onEnd);
+  const accumulatedTextRef = useRef('');
 
   useEffect(() => {
     callbackRef.current = onTranscript;
-  }, [onTranscript]);
+    onEndRef.current = onEnd;
+  }, [onTranscript, onEnd]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -37,6 +40,7 @@ export function useVoiceRecognition(onTranscript: (text: string) => void) {
           }
         }
         if (finalTranscript) {
+          accumulatedTextRef.current += finalTranscript;
           callbackRef.current(finalTranscript);
         }
       };
@@ -48,6 +52,10 @@ export function useVoiceRecognition(onTranscript: (text: string) => void) {
 
       recognition.onend = () => {
         setIsListening(false);
+        if (onEndRef.current && accumulatedTextRef.current) {
+          onEndRef.current(accumulatedTextRef.current.trim());
+        }
+        accumulatedTextRef.current = '';
       };
 
       recognitionRef.current = recognition;
@@ -56,6 +64,7 @@ export function useVoiceRecognition(onTranscript: (text: string) => void) {
 
   const startListening = () => {
     if (recognitionRef.current && !isListening) {
+      accumulatedTextRef.current = '';
       recognitionRef.current.start();
       setIsListening(true);
     }
@@ -65,6 +74,7 @@ export function useVoiceRecognition(onTranscript: (text: string) => void) {
     if (recognitionRef.current && isListening) {
       recognitionRef.current.stop();
       setIsListening(false);
+      // onend is typically fired by stop() automatically, so the onEnd callback will be handled there.
     }
   };
 

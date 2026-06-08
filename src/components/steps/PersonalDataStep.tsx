@@ -4,6 +4,7 @@ import { useCV } from '@/context/CVContext';
 import { formatRut, validateRut } from '@/utils/rutValidation';
 import { useVoiceRecognition } from '@/hooks/useVoiceRecognition';
 import AIEnhanceButton from '@/components/AIEnhanceButton';
+import { enhanceTextWithAI } from '@/utils/aiHelper';
 
 type PersonalData = {
   fullName: string;
@@ -63,7 +64,20 @@ export default function PersonalDataStep() {
     }
   };
 
-  const { isListening, isSupported, startListening, stopListening } = useVoiceRecognition(handleTranscript);
+  const handleDictationEnd = async () => {
+    if (activeVoiceField && typeof formData[activeVoiceField] === 'string') {
+      try {
+        const enhancedText = await enhanceTextWithAI(formData[activeVoiceField] as string, `Corrige y mejora el texto para el campo de CV: ${activeVoiceField}`);
+        if (enhancedText) {
+          setFormData(prev => ({ ...prev, [activeVoiceField]: enhancedText }));
+        }
+      } catch (e) {
+        console.error("AI Auto-enhance error", e);
+      }
+    }
+  };
+
+  const { isListening, isSupported, startListening, stopListening } = useVoiceRecognition(handleTranscript, handleDictationEnd);
 
   const toggleVoice = (field: keyof PersonalData) => {
     if (isListening && activeVoiceField === field) {
@@ -95,7 +109,7 @@ export default function PersonalDataStep() {
         type="button"
         onClick={() => toggleVoice(field)}
         title="Dictar por voz"
-        className={`absolute right-12 top-2 p-1.5 rounded-full transition-colors ${isActive ? 'bg-red-50 text-red-600 border border-red-200 animate-pulse' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}
+        className={`p-1.5 rounded-full transition-colors shadow-sm ${isActive ? 'bg-red-50 text-red-600 border border-red-200 animate-pulse' : 'bg-blue-50 text-blue-600 border border-transparent hover:bg-blue-100 hover:border-blue-200'}`}
       >
         {isActive ? <div className="w-4 h-4 rounded-full bg-red-600"></div> : <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>}
       </button>
@@ -127,8 +141,8 @@ export default function PersonalDataStep() {
           <label className="block text-sm font-medium text-gray-700 mb-1">Nombre Completo</label>
           <div className="relative">
             <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} placeholder="Ej. Juan Pérez González" className="w-full pl-4 pr-24 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none" />
-            {renderVoiceButton('fullName')}
-            <div className="absolute right-2 top-2">
+            <div className="absolute right-2 top-2 flex items-center gap-1.5">
+              {renderVoiceButton('fullName')}
               <AIEnhanceButton compact currentText={formData.fullName} contextInfo="Corrige la ortografía y tildes de este nombre propio de persona" onEnhanced={(t) => setFormData(p => ({...p, fullName: t}))} />
             </div>
           </div>
@@ -139,7 +153,9 @@ export default function PersonalDataStep() {
             <label className="block text-sm font-medium text-gray-700 mb-1">RUT / Documento de Identidad</label>
             <div className="relative">
               <input type="text" name="rut" value={formData.rut} onChange={handleChange} placeholder="Ej. 12.345.678-9" maxLength={20} className={`w-full pl-4 pr-12 py-3 rounded-xl border ${rutError ? 'border-orange-300 focus:ring-orange-500' : 'border-gray-200 focus:ring-blue-500'} focus:ring-2 outline-none`} />
-              {renderVoiceButton('rut')}
+              <div className="absolute right-2 top-2 flex items-center gap-1.5">
+                {renderVoiceButton('rut')}
+              </div>
             </div>
             {rutError && <p className="text-orange-500 text-xs mt-1">{rutError}</p>}
           </div>
@@ -148,8 +164,8 @@ export default function PersonalDataStep() {
             <label className="block text-sm font-medium text-gray-700 mb-1">Nacionalidad</label>
             <div className="relative">
               <input type="text" name="nationality" value={formData.nationality} onChange={handleChange} className="w-full pl-4 pr-24 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none" />
-              {renderVoiceButton('nationality')}
-              <div className="absolute right-2 top-2">
+              <div className="absolute right-2 top-2 flex items-center gap-1.5">
+                {renderVoiceButton('nationality')}
                 <AIEnhanceButton compact currentText={formData.nationality} contextInfo="Corrige ortografía de nacionalidad" onEnhanced={(t) => setFormData(p => ({...p, nationality: t}))} />
               </div>
             </div>
@@ -161,7 +177,9 @@ export default function PersonalDataStep() {
             <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
             <div className="relative">
               <input type="text" name="phone" value={formData.phone} onChange={handleChange} placeholder="Ej. +569 1234 5678" className="w-full pl-4 pr-12 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none" />
-              {renderVoiceButton('phone')}
+              <div className="absolute right-2 top-2 flex items-center gap-1.5">
+                {renderVoiceButton('phone')}
+              </div>
             </div>
           </div>
 
@@ -169,7 +187,9 @@ export default function PersonalDataStep() {
             <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
             <div className="relative">
               <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Ej. juan@correo.com" className="w-full pl-4 pr-12 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none" />
-              {renderVoiceButton('email')}
+              <div className="absolute right-2 top-2 flex items-center gap-1.5">
+                {renderVoiceButton('email')}
+              </div>
             </div>
           </div>
         </div>
@@ -179,8 +199,8 @@ export default function PersonalDataStep() {
             <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de Nacimiento</label>
             <div className="relative mb-2">
               <input type="text" name="birthDate" value={formData.birthDate} onChange={handleChange} placeholder="Ej. 15 de Marzo 1990" className="w-full pl-4 pr-24 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none" />
-              {renderVoiceButton('birthDate')}
-              <div className="absolute right-2 top-2">
+              <div className="absolute right-2 top-2 flex items-center gap-1.5">
+                {renderVoiceButton('birthDate')}
                 <AIEnhanceButton compact currentText={formData.birthDate} contextInfo="Mejora el formato de esta fecha de nacimiento" onEnhanced={(t) => setFormData(p => ({...p, birthDate: t}))} />
               </div>
             </div>
@@ -204,8 +224,8 @@ export default function PersonalDataStep() {
           <label className="block text-sm font-medium text-gray-700 mb-1">Domicilio</label>
           <div className="relative">
             <input type="text" name="address" value={formData.address} onChange={handleChange} placeholder="Ej. Av. Providencia 1234, Santiago" className="w-full pl-4 pr-24 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none" />
-            {renderVoiceButton('address')}
-            <div className="absolute right-2 top-2">
+            <div className="absolute right-2 top-2 flex items-center gap-1.5">
+              {renderVoiceButton('address')}
               <AIEnhanceButton compact currentText={formData.address} contextInfo="Corrige la ortografía y formato de esta dirección domiciliaria en Chile" onEnhanced={(t) => setFormData(p => ({...p, address: t}))} />
             </div>
           </div>
@@ -215,7 +235,9 @@ export default function PersonalDataStep() {
             <label className="block text-sm font-medium text-gray-700 mb-1">Licencia de Conducir</label>
             <div className="relative">
               <input type="text" name="driverLicense" value={formData.driverLicense} onChange={handleChange} placeholder="Ej. Clase B o No tiene" className="w-full pl-4 pr-12 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none" />
-              {renderVoiceButton('driverLicense')}
+              <div className="absolute right-2 top-2 flex items-center gap-1.5">
+                {renderVoiceButton('driverLicense')}
+              </div>
             </div>
           </div>
 
@@ -230,15 +252,19 @@ export default function PersonalDataStep() {
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">Tipo de discapacidad</label>
                   <div className="relative">
-                    <input type="text" name="disabilityType" value={formData.disabilityType} onChange={handleChange} placeholder="Ej. Física, Visual" className="w-full pl-3 pr-8 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
-                    {renderVoiceButton('disabilityType')}
+                    <input type="text" name="disabilityType" value={formData.disabilityType} onChange={handleChange} placeholder="Ej. Física, Visual" className="w-full pl-3 pr-10 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+                    <div className="absolute right-1 top-1.5 flex items-center gap-1.5">
+                      {renderVoiceButton('disabilityType')}
+                    </div>
                   </div>
                 </div>
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">Porcentaje (%)</label>
                   <div className="relative">
-                    <input type="text" name="disabilityPercentage" value={formData.disabilityPercentage} onChange={handleChange} placeholder="Ej. 30%" className="w-full pl-3 pr-8 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
-                    {renderVoiceButton('disabilityPercentage')}
+                    <input type="text" name="disabilityPercentage" value={formData.disabilityPercentage} onChange={handleChange} placeholder="Ej. 30%" className="w-full pl-3 pr-10 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
+                    <div className="absolute right-1 top-1.5 flex items-center gap-1.5">
+                      {renderVoiceButton('disabilityPercentage')}
+                    </div>
                   </div>
                 </div>
               </div>
