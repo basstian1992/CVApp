@@ -22,22 +22,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'API keys are missing' }, { status: 500 });
     }
 
-    const prompt = `Eres un redactor experto de Currículums Vitae (CV) en Chile.
-El usuario ha escrito o dictado lo siguiente para el campo: "${context}".
-Tu objetivo es corregir la ortografía, mejorar la redacción, usar un tono profesional y verbos de acción.
-NO inventes datos, títulos, ni empresas que no estén en el texto original.
-CRÍTICO: Devuelve ÚNICAMENTE el texto mejorado, sin introducciones, sin comentarios, SIN comillas y SIN bloques de código (Markdown). El texto debe estar listo para ser insertado directamente en un input HTML.
+    const systemPrompt = `Eres un redactor experto de Currículums Vitae (CV) en Chile.
+Tu único objetivo es corregir ortografía, mejorar redacción, usar un tono profesional y verbos de acción.
+NO inventes datos, títulos, ni empresas.
+CRÍTICO: Devuelve ÚNICAMENTE el texto mejorado, sin introducciones, sin comentarios, SIN comillas y SIN bloques de código. Listo para un input HTML.`;
 
-Texto original del usuario:
-${text}
-`;
+    const userPrompt = `Campo a mejorar: "${context}"\n\nTexto original del usuario:\n${text}`;
 
     let enhancedText = '';
 
     try {
       // Intento 1: Google Gemini
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-      const result = await model.generateContent(prompt);
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash', systemInstruction: systemPrompt });
+      const result = await model.generateContent(userPrompt);
       const response = await result.response;
       enhancedText = response.text().trim();
     } catch (geminiError) {
@@ -47,7 +44,10 @@ ${text}
         // Intento 2 (Fallback 1): Groq
         if (!groqApiKey) throw new Error("No hay llave de Groq");
         const chatCompletion = await groq.chat.completions.create({
-          messages: [{ role: 'user', content: prompt }],
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ],
           model: 'llama-3.1-8b-instant',
           temperature: 0.3,
           max_tokens: 1024,
@@ -68,9 +68,10 @@ ${text}
             "X-Title": "CV Gratis", // Site Title
           },
           body: JSON.stringify({
-            "model": "google/gemma-2-9b-it:free", // Modelo gratuito y rápido en OpenRouter
+            "model": "meta-llama/llama-3-8b-instruct:free", // Modelo gratuito y rápido en OpenRouter
             "messages": [
-              {"role": "user", "content": prompt}
+              {"role": "system", "content": systemPrompt},
+              {"role": "user", "content": userPrompt}
             ],
             "temperature": 0.3,
           })
