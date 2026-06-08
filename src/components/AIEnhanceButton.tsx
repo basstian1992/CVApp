@@ -39,7 +39,6 @@ export default function AIEnhanceButton({ currentText, contextInfo, onEnhanced, 
         type="button"
         onClick={handleEnhance}
         disabled={isLoading || !currentText.trim()}
-        title="Corregir y mejorar con IA"
         className={`flex items-center justify-center transition-all ${
           compact 
             ? `w-8 h-8 rounded-full ${isLoading ? 'bg-purple-100 text-purple-400' : error ? 'bg-red-50 text-red-500 border border-red-200' : 'bg-purple-50 text-purple-600 hover:bg-purple-100'}`
