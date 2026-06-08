@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import ProgressBar from '@/components/ProgressBar';
 import PersonalDataStep from '@/components/steps/PersonalDataStep';
 import ExperienceStep from '@/components/steps/ExperienceStep';
@@ -32,8 +33,8 @@ export default function Home() {
       <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-white/20">
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center shadow-lg shadow-blue-500/20 bg-white">
-              <img src="/logo.png" alt="CVApp Logo" className="w-full h-full object-cover scale-[1.08]" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.innerHTML = '<span class="text-blue-600 font-bold text-lg leading-none tracking-tighter">CV</span>'; }} />
+            <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center shadow-lg shadow-blue-500/20 bg-white relative">
+              <Image src="/logo.png" alt="CVApp Logo" fill sizes="40px" className="object-cover scale-[1.08]" priority onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.innerHTML = '<span class="text-blue-600 font-bold text-lg leading-none tracking-tighter">CV</span>'; }} />
             </div>
             <h1 className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-900 to-blue-600 tracking-tight">CV App</h1>
           </div>
@@ -52,8 +53,8 @@ export default function Home() {
           <div className="mb-14 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="text-center space-y-6">
               <div className="flex justify-center mb-2">
-                <div className="w-32 h-32 md:w-40 md:h-40 rounded-full shadow-2xl shadow-blue-500/20 bg-white flex items-center justify-center overflow-hidden border-4 border-white">
-                  <img src="/logo.png" alt="CVApp Logo Grande" className="w-full h-full object-cover scale-[1.08]" onError={(e) => e.currentTarget.style.display = 'none'} />
+                <div className="w-32 h-32 md:w-40 md:h-40 rounded-full shadow-2xl shadow-blue-500/20 bg-white flex items-center justify-center overflow-hidden border-4 border-white relative">
+                  <Image src="/logo.png" alt="CVApp Logo Grande" fill sizes="(max-width: 768px) 128px, 160px" className="object-cover scale-[1.08]" priority onError={(e) => e.currentTarget.style.display = 'none'} />
                 </div>
               </div>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 tracking-tight pb-2">
