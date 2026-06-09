@@ -9,7 +9,12 @@ declare global {
 
 export function useVoiceRecognition(onTranscript: (text: string) => void, onEnd?: (finalText: string) => void) {
   const [isListening, setIsListening] = useState(false);
-  const [isSupported, setIsSupported] = useState(true);
+  const [isSupported, setIsSupported] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+    }
+    return true; // default to true on server, will adjust on client
+  });
   const recognitionRef = useRef<any>(null);
   const callbackRef = useRef(onTranscript);
   const onEndRef = useRef(onEnd);
@@ -24,7 +29,7 @@ export function useVoiceRecognition(onTranscript: (text: string) => void, onEnd?
     if (typeof window !== 'undefined') {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
-        setIsSupported(false);
+        setIsSupported(false); // safe to update here if it was true on server
         return;
       }
       const recognition = new SpeechRecognition();

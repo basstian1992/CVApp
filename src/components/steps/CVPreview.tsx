@@ -127,10 +127,10 @@ export default function CVPreview() {
           <div ref={cvRef} className="cv-content font-sans" style={{ fontSize: '14px', lineHeight: '1.6', color: theme.textDark, backgroundColor: '#ffffff' }}>
           
           {/* Header */}
-          <div className="pb-6 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-6" style={{ borderBottom: `2px solid ${theme.primary}` }}>
+          <div className="pb-8 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-8" style={{ borderBottom: `2px solid ${theme.primary}` }}>
             <div className="flex-1">
-              <h1 className="text-3xl font-bold uppercase tracking-wider mb-2" style={{ color: theme.textDark }}>{personalData.fullName || 'Tu Nombre'}</h1>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm" style={{ color: theme.textLight }}>
+              <h1 className="text-4xl font-extrabold uppercase tracking-widest mb-4" style={{ color: theme.primary }}>{personalData.fullName || 'Tu Nombre'}</h1>
+              <div className="flex flex-wrap gap-x-6 gap-y-2 text-base font-medium" style={{ color: theme.textLight }}>
                 {personalData.rut && <span><strong>RUT/ID:</strong> {personalData.rut}</span>}
                 {personalData.nationality && <span><strong>Nacionalidad:</strong> {personalData.nationality}</span>}
                 {personalData.address && <span><strong>Domicilio:</strong> {personalData.address}</span>}
@@ -139,10 +139,11 @@ export default function CVPreview() {
                 {personalData.showBirthDate && personalData.birthDate && <span><strong>Fecha de Nacimiento:</strong> {personalData.birthDate}</span>}
                 {personalData.driverLicense && <span><strong>Licencia de Conducir:</strong> {personalData.driverLicense}</span>}
                 {personalData.hasDisability && <span><strong>Discapacidad:</strong> Sí {personalData.disabilityType ? `(${personalData.disabilityType} ${personalData.disabilityPercentage ? '- ' + personalData.disabilityPercentage : ''})` : ''}</span>}
+                {personalData.immediateAvailability && <span><strong>Disponibilidad:</strong> Inmediata</span>}
               </div>
             </div>
             {personalData.photo && (
-              <div className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 rounded-full overflow-hidden border-4" style={{ borderColor: theme.bgLight }}>
+              <div className="w-28 h-28 sm:w-36 sm:h-36 shrink-0 rounded-full overflow-hidden border-[4px] shadow-sm" style={{ borderColor: theme.primary }}>
                 <img src={personalData.photo} alt="Fotografía" className="w-full h-full object-cover" />
               </div>
             )}
@@ -150,29 +151,30 @@ export default function CVPreview() {
 
           {/* Summary */}
           {summary && (
-            <div className="mb-6">
-              <h2 className="text-lg font-bold uppercase mb-2" style={{ color: theme.primary }}>Perfil Profesional</h2>
-              <p className="text-justify" style={{ color: theme.textDark }}>{summary}</p>
+            <div className="mb-8">
+              <h2 className="text-xl font-bold uppercase tracking-wider mb-4 pb-2" style={{ color: theme.primary, borderBottom: `1px solid ${theme.bgLight}` }}>Perfil Profesional</h2>
+              <p className="text-justify leading-relaxed text-base" style={{ color: theme.textDark }}>{summary}</p>
             </div>
           )}
 
           {/* Experience */}
           {experiences.some(e => e.company || e.position) && (
-            <div className="mb-6">
-              <h2 className="text-lg font-bold uppercase mb-3" style={{ color: theme.primary }}>Experiencia Laboral</h2>
-              <div className="space-y-4">
+            <div className="mb-8">
+              <h2 className="text-xl font-bold uppercase tracking-wider mb-5 pb-2" style={{ color: theme.primary, borderBottom: `1px solid ${theme.bgLight}` }}>Experiencia Laboral</h2>
+              <div className="space-y-6">
                 {experiences.map(exp => {
                   if (!exp.company && !exp.position) return null;
                   return (
-                    <div key={exp.id}>
+                    <div key={exp.id} className="relative pl-5 border-l-2" style={{ borderColor: theme.bgLight }}>
+                      <div className="absolute w-3 h-3 rounded-full -left-[7px] top-2" style={{ backgroundColor: theme.primary }}></div>
                       <div className="flex justify-between items-baseline mb-1">
-                        <h3 className="font-bold" style={{ color: theme.textDark }}>{exp.position}</h3>
-                        <span className="text-sm font-medium" style={{ color: theme.textLight }}>
+                        <h3 className="text-lg font-bold" style={{ color: theme.textDark }}>{exp.position}</h3>
+                        <span className="text-sm font-semibold px-3 py-1 rounded-md" style={{ backgroundColor: theme.bgLight, color: theme.primary }}>
                           {exp.startDate} {exp.endDate ? `- ${exp.endDate}` : '- Presente'}
                         </span>
                       </div>
-                      <div className="font-medium mb-1" style={{ color: theme.secondary }}>{exp.company}</div>
-                      <p className="text-sm whitespace-pre-line" style={{ color: theme.textDark }}>{exp.description}</p>
+                      <div className="text-base font-semibold mb-2 uppercase tracking-wide" style={{ color: theme.secondary }}>{exp.company}</div>
+                      <p className="text-base leading-relaxed whitespace-pre-line" style={{ color: theme.textDark }}>{exp.description}</p>
                     </div>
                   );
                 })}
@@ -182,20 +184,21 @@ export default function CVPreview() {
 
           {/* Education */}
           {educations.some(e => e.institution || e.degree) && (
-            <div className="mb-6">
-              <h2 className="text-lg font-bold uppercase mb-3" style={{ color: theme.primary }}>Formación Académica</h2>
-              <div className="space-y-3">
+            <div className="mb-8">
+              <h2 className="text-xl font-bold uppercase tracking-wider mb-5 pb-2" style={{ color: theme.primary, borderBottom: `1px solid ${theme.bgLight}` }}>Formación Académica</h2>
+              <div className="space-y-6">
                 {educations.map(edu => {
                   if (!edu.institution && !edu.degree) return null;
                   return (
-                    <div key={edu.id}>
+                    <div key={edu.id} className="relative pl-5 border-l-2" style={{ borderColor: theme.bgLight }}>
+                      <div className="absolute w-3 h-3 rounded-full -left-[7px] top-2" style={{ backgroundColor: theme.secondary }}></div>
                       <div className="flex justify-between items-baseline mb-1">
-                        <h3 className="font-bold" style={{ color: theme.textDark }}>{edu.degree}</h3>
-                        <span className="text-sm font-medium" style={{ color: theme.textLight }}>
+                        <h3 className="text-lg font-bold" style={{ color: theme.textDark }}>{edu.degree}</h3>
+                        <span className="text-sm font-semibold px-3 py-1 rounded-md" style={{ backgroundColor: theme.bgLight, color: theme.primary }}>
                           {edu.startDate} {edu.endDate ? `- ${edu.endDate}` : ''}
                         </span>
                       </div>
-                      <div style={{ color: theme.textLight }}>{edu.institution}</div>
+                      <div className="text-base font-medium" style={{ color: theme.textLight }}>{edu.institution}</div>
                     </div>
                   );
                 })}
@@ -205,11 +208,11 @@ export default function CVPreview() {
 
           {/* Skills */}
           {skills.length > 0 && (
-            <div>
-              <h2 className="text-lg font-bold uppercase mb-3" style={{ color: theme.primary }}>Habilidades Destacadas</h2>
-              <div className="flex flex-wrap gap-2">
+            <div className="mb-4">
+              <h2 className="text-xl font-bold uppercase tracking-wider mb-5 pb-2" style={{ color: theme.primary, borderBottom: `1px solid ${theme.bgLight}` }}>Habilidades Destacadas</h2>
+              <div className="flex flex-wrap gap-3">
                 {skills.map((skill, i) => (
-                  <span key={i} className="px-3 py-1 rounded-md text-sm font-medium" style={{ backgroundColor: theme.bgLight, color: theme.textDark }}>
+                  <span key={i} className="px-4 py-2 rounded-lg text-sm font-bold tracking-wide shadow-sm" style={{ backgroundColor: theme.bgLight, color: theme.primary, border: `1px solid ${theme.primary}30` }}>
                     {skill}
                   </span>
                 ))}

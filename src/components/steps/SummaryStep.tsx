@@ -6,12 +6,12 @@ import { useVoiceRecognition } from '@/hooks/useVoiceRecognition';
 import { enhanceTextWithAI } from '@/utils/aiHelper';
 
 export default function SummaryStep() {
-  const { summary, setSummary, theme, setTheme } = useCV();
+  const { summary, setSummary, theme, setTheme, personalData, setPersonalData } = useCV();
 
   const handleDictationEnd = async () => {
     if (summary.trim()) {
       try {
-        const enhancedText = await enhanceTextWithAI(summary.trim(), "Este es el resumen o perfil profesional al inicio de un Curriculum Vitae. Mejora la redacción para que suene proactivo, profesional, formal y persuasivo. Limítalo a un máximo de 50 palabras.");
+        const enhancedText = await enhanceTextWithAI(summary.trim(), "Este es el resumen o perfil profesional al inicio de un Curriculum Vitae. Mejora la redacción para que suene proactivo, profesional, formal y persuasivo. Limítalo a un máximo de 50 palabras. Asegúrate de que la ortografía sea correcta y usa mayúsculas donde corresponda. Si el texto contiene meses o fechas habladas, escríbelas en formato adecuado con el mes en mayúscula (ej. '13 de Mayo de 1990').");
         if (enhancedText) {
           setSummary(enhancedText);
         }
@@ -66,6 +66,19 @@ export default function SummaryStep() {
             onEnhanced={(t) => setSummary(t)} 
           />
         </div>
+      </div>
+
+      <div className="mb-6 p-4 border border-blue-100 bg-blue-50/50 rounded-xl">
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input 
+            type="checkbox" 
+            checked={personalData.immediateAvailability} 
+            onChange={(e) => setPersonalData(prev => ({ ...prev, immediateAvailability: e.target.checked }))} 
+            className="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500" 
+          />
+          <span className="text-gray-800 font-medium text-sm">Disponibilidad Inmediata</span>
+        </label>
+        <p className="text-xs text-gray-500 mt-1 ml-8">Marca esta casilla si puedes comenzar a trabajar de forma inmediata.</p>
       </div>
 
       <div className="mt-8 pt-6 border-t border-gray-100">

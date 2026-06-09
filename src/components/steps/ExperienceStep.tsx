@@ -41,7 +41,7 @@ function ExperienceForm({ experience, index, onChange, onRemove, canRemove }: { 
   const handleDictationEnd = async () => {
     if (activeVoiceField && typeof experience[activeVoiceField] === 'string') {
       try {
-        const enhancedText = await enhanceTextWithAI(experience[activeVoiceField] as string, `Corrige y mejora el texto para el campo de CV de experiencia laboral: ${activeVoiceField}`);
+        const enhancedText = await enhanceTextWithAI(experience[activeVoiceField] as string, `Corrige y mejora el texto para el campo de CV de experiencia laboral: ${activeVoiceField}. Asegúrate de que la ortografía sea correcta y usa mayúsculas donde corresponda. Si el texto contiene meses o fechas habladas (ej. 'trece de mayo del noventa'), escríbelas en formato adecuado con el mes en mayúscula (ej. '13 de Mayo de 1990').`);
         if (enhancedText) {
           onChange(activeVoiceField, enhancedText);
         }

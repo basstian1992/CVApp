@@ -30,7 +30,7 @@ export default function SkillsStep() {
   const handleDictationEnd = async () => {
     if (currentSkill.trim()) {
       try {
-        const enhancedText = await enhanceTextWithAI(currentSkill.trim(), "Mejora el nombre de esta habilidad laboral para que suene profesional y concisa (1 a 4 palabras máximo)");
+        const enhancedText = await enhanceTextWithAI(currentSkill.trim(), "Mejora el nombre de esta habilidad laboral para que suene profesional y concisa (1 a 4 palabras máximo). Asegúrate de que la ortografía sea correcta y usa mayúsculas donde corresponda. Si el texto contiene meses o fechas habladas, escríbelas en formato adecuado con el mes en mayúscula (ej. '13 de Mayo de 1990').");
         if (enhancedText) {
           setCurrentSkill(enhancedText);
         }

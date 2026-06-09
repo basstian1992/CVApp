@@ -5,6 +5,7 @@ import { formatRut, validateRut } from '@/utils/rutValidation';
 import { useVoiceRecognition } from '@/hooks/useVoiceRecognition';
 import AIEnhanceButton from '@/components/AIEnhanceButton';
 import { enhanceTextWithAI } from '@/utils/aiHelper';
+import ImageCropper from '@/components/ImageCropper';
 
 type PersonalData = {
   fullName: string;
@@ -21,12 +22,14 @@ type PersonalData = {
   disabilityType: string;
   disabilityPercentage: string;
   photo: string | null;
+  immediateAvailability: boolean;
 };
 
 export default function PersonalDataStep() {
-  const { personalData: formData, setPersonalData: setFormData } = useCV();
+  const { personalData: formData, setPersonalData: setFormData, theme } = useCV();
   const [rutError, setRutError] = useState('');
   const [activeVoiceField, setActiveVoiceField] = useState<keyof PersonalData | null>(null);
+  const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -67,7 +70,7 @@ export default function PersonalDataStep() {
   const handleDictationEnd = async () => {
     if (activeVoiceField && typeof formData[activeVoiceField] === 'string') {
       try {
-        const enhancedText = await enhanceTextWithAI(formData[activeVoiceField] as string, `Corrige y mejora el texto para el campo de CV: ${activeVoiceField}`);
+        const enhancedText = await enhanceTextWithAI(formData[activeVoiceField] as string, `Corrige y mejora el texto para el campo de CV: ${activeVoiceField}. Asegúrate de que la ortografía sea correcta y usa mayúsculas donde corresponda. Si el texto contiene meses o fechas habladas (ej. 'trece de mayo del noventa'), escríbelas en formato adecuado con el mes en mayúscula (ej. '13 de Mayo de 1990').`);
         if (enhancedText) {
           setFormData(prev => ({ ...prev, [activeVoiceField]: enhancedText }));
         }
@@ -94,9 +97,14 @@ export default function PersonalDataStep() {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => setFormData(prev => ({ ...prev, photo: reader.result as string }));
+      reader.onloadend = () => setCropImageSrc(reader.result as string);
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleCropComplete = (croppedImage: string) => {
+    setFormData(prev => ({ ...prev, photo: croppedImage }));
+    setCropImageSrc(null);
   };
 
   const removePhoto = () => setFormData(prev => ({ ...prev, photo: null }));
@@ -118,12 +126,20 @@ export default function PersonalDataStep() {
 
   return (
     <div className="bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-gray-100 max-w-2xl mx-auto w-full">
+      {cropImageSrc && (
+        <ImageCropper 
+          imageSrc={cropImageSrc} 
+          onCropComplete={handleCropComplete} 
+          onCancel={() => setCropImageSrc(null)} 
+          themeColor={theme.primary}
+        />
+      )}
       <h2 className="text-2xl font-bold text-gray-800 mb-6 font-sans">Datos Personales</h2>
       
       <div className="space-y-5">
         <div className="flex flex-col items-center sm:flex-row sm:items-start gap-4 p-4 border border-gray-100 rounded-xl bg-gray-50/50">
           <div className="relative group">
-            <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200 bg-white flex items-center justify-center">
+            <div className="w-24 h-24 rounded-full overflow-hidden border-4 bg-white flex items-center justify-center transition-colors" style={{ borderColor: formData.photo ? theme.primary : '#e5e7eb' }}>
               {formData.photo ? <img src={formData.photo} alt="Foto" className="w-full h-full object-cover" /> : <svg className="w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" /></svg>}
             </div>
             {formData.photo && <button onClick={removePhoto} className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1 shadow-sm hover:bg-red-600"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>}
@@ -134,6 +150,7 @@ export default function PersonalDataStep() {
               {formData.photo ? 'Cambiar Foto' : 'Subir Foto'}
               <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
             </label>
+            <p className="text-xs text-gray-500 mt-2">Sube tu foto y recórtala en forma circular.</p>
           </div>
         </div>
 
@@ -179,6 +196,7 @@ export default function PersonalDataStep() {
               <input type="text" name="phone" value={formData.phone} onChange={handleChange} placeholder="Ej. +569 1234 5678" className="w-full pl-4 pr-12 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none" />
               <div className="absolute right-2 top-2 flex items-center gap-1.5">
                 {renderVoiceButton('phone')}
+                <AIEnhanceButton compact currentText={formData.phone} contextInfo="Mejora el formato de este número telefónico" onEnhanced={(t) => setFormData(p => ({...p, phone: t}))} />
               </div>
             </div>
           </div>
@@ -237,6 +255,7 @@ export default function PersonalDataStep() {
               <input type="text" name="driverLicense" value={formData.driverLicense} onChange={handleChange} placeholder="Ej. Clase B o No tiene" className="w-full pl-4 pr-12 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none" />
               <div className="absolute right-2 top-2 flex items-center gap-1.5">
                 {renderVoiceButton('driverLicense')}
+                <AIEnhanceButton compact currentText={formData.driverLicense} contextInfo="Mejora la redacción y formalidad de esta información sobre licencia de conducir" onEnhanced={(t) => setFormData(p => ({...p, driverLicense: t}))} />
               </div>
             </div>
           </div>
@@ -255,6 +274,7 @@ export default function PersonalDataStep() {
                     <input type="text" name="disabilityType" value={formData.disabilityType} onChange={handleChange} placeholder="Ej. Física, Visual" className="w-full pl-3 pr-10 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
                     <div className="absolute right-1 top-1.5 flex items-center gap-1.5">
                       {renderVoiceButton('disabilityType')}
+                      <AIEnhanceButton compact currentText={formData.disabilityType} contextInfo="Mejora la ortografía y redacción del tipo de discapacidad" onEnhanced={(t) => setFormData(p => ({...p, disabilityType: t}))} />
                     </div>
                   </div>
                 </div>
@@ -264,6 +284,7 @@ export default function PersonalDataStep() {
                     <input type="text" name="disabilityPercentage" value={formData.disabilityPercentage} onChange={handleChange} placeholder="Ej. 30%" className="w-full pl-3 pr-10 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm" />
                     <div className="absolute right-1 top-1.5 flex items-center gap-1.5">
                       {renderVoiceButton('disabilityPercentage')}
+                      <AIEnhanceButton compact currentText={formData.disabilityPercentage} contextInfo="Mejora el formato de porcentaje de discapacidad (ej. '30%')" onEnhanced={(t) => setFormData(p => ({...p, disabilityPercentage: t}))} />
                     </div>
                   </div>
                 </div>
